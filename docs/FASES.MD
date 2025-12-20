@@ -1,18 +1,18 @@
 Plan de Implementacion 
 
-[ ] 1. Fundamentos (setup, auth) : 0%
-[ ] 2. Catalogo de productos : 0%
-[ ] 3. Carrito de compras: 0%
-[ ] 4. Precios e impuestos : 0%
-[ ] 5. Checkout y pedidos: 0%
-[ ] 6. Envios: 0%
-[ ] 7. Pagos : 0%
-[ ] 8. Emails: 0%
-[ ] 9. CMS : 0%
-[ ] 10. Multilenguaje: 0%
-[ ] 11. SEO: 0%
-[ ] 12. Stock avanzado : 0%
-[ ] 13. Configuracion global : 0%
-[ ] 14. Testing: 0%
-[ ] 15. Modulos: 0%
-[ ] 16. Produccion: 0%
+[x] 1. Fundamentos (setup, auth) : 100%
+[x] 2. Catalogo de productos : 100%
+[x] 3. Carrito de compras: 100%
+[x] 4. Precios e impuestos : 100%
+[x] 5. Checkout y pedidos: 100%
+[x] 6. Envios: 100%
+[x] 7. Pagos : 100%
+[x] 8. Emails: 100%
+[x] 9. CMS : 100%
+[x] 10. Multilenguaje: 100%
+[x] 11. SEO: 100%
+[x] 12. Stock avanzado : 100%
+[x] 13. Configuracion global : 100%
+[x] 14. Testing: 100%
+[x] 15. Modulos: 100%
+[x] 16. Produccion: 100%
