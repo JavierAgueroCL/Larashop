@@ -34,13 +34,16 @@ class CheckoutController extends Controller
 
         $totals = $this->cartService->getCartTotals($cart);
 
-        return view('shop.checkout.index', compact('cart', 'totals', 'user'));
+        $addresses = $user ? $user->addresses()->where('address_type', 'shipping')->get() : collect();
+
+        return view('shop.checkout.index', compact('cart', 'totals', 'user', 'addresses'));
     }
 
     public function process(Request $request)
     {
         // Validation
-        $request->validate([
+        $rules = [
+            'shipping_address.alias' => 'nullable|string|max:255',
             'shipping_address.first_name' => 'required',
             'shipping_address.last_name' => 'required',
             'shipping_address.address_line_1' => 'required',
@@ -49,10 +52,15 @@ class CheckoutController extends Controller
             'shipping_address.country_code' => 'required',
             'shipping_address.phone' => 'required',
             'payment_method' => 'required',
-            'email' => 'required_without:user_id|email',
-            'create_account' => 'nullable|boolean',
-            'password' => 'required_if:create_account,1|confirmed',
-        ]);
+        ];
+
+        if (!Auth::check()) {
+            $rules['email'] = 'required|email';
+            $rules['create_account'] = 'nullable|boolean';
+            $rules['password'] = 'required_if:create_account,1|confirmed';
+        }
+
+        $request->validate($rules);
 
         $user = Auth::user();
 

@@ -18,6 +18,12 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 
 // Product Detail (changed to /p/ to avoid conflict with /products/{category})
 Route::get('/p/{slug}', [ProductController::class, 'show'])->name('products.show');
+Route::post('/products/{product}/reviews', [ProductController::class, 'storeReview'])->name('products.reviews.store')->middleware('auth');
+Route::get('/products/{product}/quick-view', [ProductController::class, 'quickView'])->name('products.quick-view');
+
+// Wishlist
+Route::post('/wishlist/toggle/{product}', [\App\Http\Controllers\Shop\WishlistController::class, 'toggle'])->name('wishlist.toggle');
+Route::get('/wishlist', [\App\Http\Controllers\Shop\WishlistController::class, 'index'])->name('wishlist.index')->middleware('auth');
 
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
 Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
@@ -30,18 +36,34 @@ Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->name('cart.
 Route::patch('/cart/{itemId}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{itemId}', [CartController::class, 'remove'])->name('cart.remove');
 
+// Checkout (Public for Guest, handles Auth internally)
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
-    // Checkout
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
-    Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
-
     // Dashboard
     Route::get('/dashboard', function () {
         $orders = \App\Models\Order::where('user_id', auth()->id())->latest()->get();
         return view('dashboard', compact('orders'));
     })->middleware(['verified'])->name('dashboard');
+    
+    Route::get('/dashboard/help', function () {
+        return view('shop.dashboard.help');
+    })->name('dashboard.help');
+
+    Route::post('/dashboard/help', function (\Illuminate\Http\Request $request) {
+        // Here you would handle sending the email
+        // Mail::to('support@larashop.test')->send(new ContactForm($request->all()));
+        
+        return back()->with('success', 'Your message has been sent successfully! We will contact you soon.');
+    })->name('dashboard.help.submit');
+
+    // Addresses
+    Route::get('/dashboard/addresses/shipping', [\App\Http\Controllers\Shop\AddressController::class, 'shippingIndex'])->name('addresses.shipping');
+    Route::get('/dashboard/addresses/billing', [\App\Http\Controllers\Shop\AddressController::class, 'billingIndex'])->name('addresses.billing');
+    Route::resource('addresses', \App\Http\Controllers\Shop\AddressController::class)->except(['index', 'show']);
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

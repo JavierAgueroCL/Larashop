@@ -12,8 +12,17 @@ class SettingSeeder extends Seeder
         $settings = [
             // General
             ['key' => 'shop_name', 'value' => 'LaraShop', 'type' => 'string', 'group' => 'general'],
-            ['key' => 'shop_email', 'value' => 'info@larashop.com', 'type' => 'string', 'group' => 'general'],
-            ['key' => 'shop_phone', 'value' => '+34 900 000 000', 'type' => 'string', 'group' => 'general'],
+            ['key' => 'shop_description', 'value' => 'High quality products for your daily needs. We provide the best e-commerce experience.', 'type' => 'string', 'group' => 'general'],
+            ['key' => 'shop_email', 'value' => 'support@larashop.test', 'type' => 'string', 'group' => 'general'],
+            ['key' => 'shop_phone', 'value' => '123-456-7890', 'type' => 'string', 'group' => 'general'],
+            ['key' => 'shop_address', 'value' => '123 Street, City, Country', 'type' => 'string', 'group' => 'general'],
+            ['key' => 'shop_timezone', 'value' => 'UTC', 'type' => 'string', 'group' => 'general'],
+
+            // Social
+            ['key' => 'social_facebook', 'value' => '#', 'type' => 'string', 'group' => 'social'],
+            ['key' => 'social_twitter', 'value' => '#', 'type' => 'string', 'group' => 'social'],
+            ['key' => 'social_instagram', 'value' => '#', 'type' => 'string', 'group' => 'social'],
+            ['key' => 'social_youtube', 'value' => '#', 'type' => 'string', 'group' => 'social'],
 
             // Shop
             ['key' => 'maintenance_mode', 'value' => '0', 'type' => 'boolean', 'group' => 'shop'],
@@ -28,7 +37,7 @@ class SettingSeeder extends Seeder
         ];
 
         foreach ($settings as $setting) {
-            Setting::create($setting);
+            Setting::updateOrCreate(['key' => $setting['key']], $setting);
         }
     }
 }

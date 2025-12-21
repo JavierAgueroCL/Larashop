@@ -13,6 +13,7 @@ class Address extends Model
     protected $fillable = [
         'user_id',
         'address_type',
+        'alias',
         'first_name',
         'last_name',
         'company',

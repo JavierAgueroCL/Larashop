@@ -43,7 +43,7 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Coupon applied successfully!');
     }
 
-    public function add(Request $request): RedirectResponse
+    public function add(Request $request)
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
@@ -60,6 +60,23 @@ class CartController extends Controller
             $request->quantity,
             $request->combination_id
         );
+
+        if ($request->wantsJson()) {
+            $cartCount = $cart->items()->sum('quantity');
+            // We might want to return HTML for the sidebar or just the count/data
+            // For now, let's return count and a success message.
+            // Ideally, we'd return the rendered sidebar HTML to update it easily.
+            $cart->load('items.product.images');
+            $totals = $this->cartService->getCartTotals($cart);
+            $sidebarHtml = view('components.cart.sidebar-content', compact('cart', 'totals'))->render();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product added to cart!',
+                'cartCount' => $cartCount,
+                'html' => $sidebarHtml
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Product added to cart!');
     }
