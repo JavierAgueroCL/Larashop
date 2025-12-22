@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Cart\CartService;
 use App\Services\Checkout\CheckoutService;
 use App\Services\Payment\PaymentManager;
+use App\Services\Shipping\ShippingCalculator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -15,7 +16,8 @@ class CheckoutController extends Controller
     public function __construct(
         protected CartService $cartService,
         protected CheckoutService $checkoutService,
-        protected PaymentManager $paymentManager
+        protected PaymentManager $paymentManager,
+        protected ShippingCalculator $shippingCalculator
     ) {}
 
     public function index(): View
@@ -35,8 +37,14 @@ class CheckoutController extends Controller
         $totals = $this->cartService->getCartTotals($cart);
 
         $addresses = $user ? $user->addresses()->where('address_type', 'shipping')->get() : collect();
+        
+        // Dummy address for calculator if no address selected yet (simplified for MVP)
+        // In a real scenario, we'd AJAX update this when address changes.
+        // For now, we assume "Europe" zone default.
+        $dummyAddress = new \App\Models\Address(['country_code' => 'ES']); 
+        $carriers = $this->shippingCalculator->getAvailableCarriers($dummyAddress, $cart);
 
-        return view('shop.checkout.index', compact('cart', 'totals', 'user', 'addresses'));
+        return view('shop.checkout.index', compact('cart', 'totals', 'user', 'addresses', 'carriers'));
     }
 
     public function process(Request $request)

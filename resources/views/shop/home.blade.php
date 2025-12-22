@@ -26,8 +26,8 @@
  <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
  </div>
  <div>
- <h5 class="font-bold text-gray-800">{{ __('Free Shipping') }}</h5>
- <p class="text-sm text-gray-500">{{ __('On all orders over $50') }}</p>
+ <h5 class="font-bold text-gray-800">{{ get_setting('feature_1_title', 'Free Shipping') }}</h5>
+ <p class="text-sm text-gray-500">{{ get_setting('feature_1_subtitle', 'On all orders over $50') }}</p>
  </div>
  </div>
  <div class="flex items-center p-6 border border-gray-300 hover:shadow-md transition-shadow">
@@ -35,8 +35,8 @@
  <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
  </div>
  <div>
- <h5 class="font-bold text-gray-800">{{ __('Secure Payment') }}</h5>
- <p class="text-sm text-gray-500">{{ __('100% secure payment') }}</p>
+ <h5 class="font-bold text-gray-800">{{ get_setting('feature_2_title', 'Secure Payment') }}</h5>
+ <p class="text-sm text-gray-500">{{ get_setting('feature_2_subtitle', '100% secure payment') }}</p>
  </div>
  </div>
  <div class="flex items-center p-6 border border-gray-300 hover:shadow-md transition-shadow">
@@ -44,8 +44,8 @@
  <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
  </div>
  <div>
- <h5 class="font-bold text-gray-800">{{ __('24/7 Support') }}</h5>
- <p class="text-sm text-gray-500">{{ __('Dedicated support') }}</p>
+ <h5 class="font-bold text-gray-800">{{ get_setting('feature_3_title', '24/7 Support') }}</h5>
+ <p class="text-sm text-gray-500">{{ get_setting('feature_3_subtitle', 'Dedicated support') }}</p>
  </div>
  </div>
  </div>

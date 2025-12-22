@@ -23,11 +23,23 @@ Route::get('/products/{product}/quick-view', [ProductController::class, 'quickVi
 
 // Wishlist
 Route::post('/wishlist/toggle/{product}', [\App\Http\Controllers\Shop\WishlistController::class, 'toggle'])->name('wishlist.toggle');
-Route::get('/wishlist', [\App\Http\Controllers\Shop\WishlistController::class, 'index'])->name('wishlist.index')->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/wishlists/json', [\App\Http\Controllers\Shop\WishlistController::class, 'getWishlistsJson'])->name('wishlist.json');
+    Route::post('/wishlist/{wishlist}/add', [\App\Http\Controllers\Shop\WishlistController::class, 'addItem'])->name('wishlist.add_item');
+    Route::get('/wishlist', [\App\Http\Controllers\Shop\WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist', [\App\Http\Controllers\Shop\WishlistController::class, 'store'])->name('wishlist.store');
+    Route::get('/wishlist/{wishlist}', [\App\Http\Controllers\Shop\WishlistController::class, 'show'])->name('wishlist.show');
+    Route::put('/wishlist/{wishlist}', [\App\Http\Controllers\Shop\WishlistController::class, 'update'])->name('wishlist.update');
+    Route::delete('/wishlist/{wishlist}', [\App\Http\Controllers\Shop\WishlistController::class, 'destroy'])->name('wishlist.destroy');
+    Route::delete('/wishlist/{wishlist}/item/{product}', [\App\Http\Controllers\Shop\WishlistController::class, 'removeItem'])->name('wishlist.remove_item');
+});
 
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
 Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
 Route::get('/sitemap.xml', [App\Http\Controllers\Shop\SitemapController::class, 'index'])->name('sitemap');
+
+// Newsletter
+Route::post('/newsletter/subscribe', [App\Http\Controllers\Shop\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 // Cart Routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

@@ -20,10 +20,12 @@ class ProductFactory extends Factory
             'slug' => Str::slug($name),
             'short_description' => fake()->sentence(),
             'description' => fake()->paragraphs(3, true),
+            'guarantee' => fake()->boolean(80) ? fake()->paragraph() : null, // 80% chance of having guarantee info
             'is_digital' => false,
             'is_active' => true,
             'is_featured' => fake()->boolean(20), // 20% de probabilidad
-            'base_price' => fake()->randomFloat(2, 10, 500),
+            'base_price' => $basePrice = fake()->randomFloat(2, 10, 500),
+            'discount_price' => fake()->boolean(30) ? $basePrice * (1 - fake()->randomFloat(2, 0.1, 0.5)) : null,
             'cost_price' => fake()->randomFloat(2, 5, 250),
             'tax_id' => Tax::factory(),
             'weight' => fake()->numberBetween(100, 5000),

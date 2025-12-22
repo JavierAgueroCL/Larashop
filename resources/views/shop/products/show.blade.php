@@ -59,7 +59,14 @@
                                     </div>
                                 </div>
 
-                                <p class="text-3xl text-indigo-600 font-bold mb-6">{{ $product->base_price_formatted }}</p>
+                                <div class="mb-6">
+                                    @if($product->discount_price)
+                                        <p class="text-3xl text-indigo-600 font-bold inline-block">{{ $product->discount_price_formatted }}</p>
+                                        <del class="text-xl text-gray-400 ml-2 inline-block">{{ $product->base_price_formatted }}</del>
+                                    @else
+                                        <p class="text-3xl text-indigo-600 font-bold">{{ $product->base_price_formatted }}</p>
+                                    @endif
+                                </div>
 
                                 @if($product->short_description)
                                     <div class="mb-6 text-gray-600">
@@ -67,8 +74,8 @@
                                     </div>
                                 @endif
 
-                                <div class="flex items-center space-x-4 mb-8">
-                                    <form x-data="{}" action="{{ route('cart.add') }}" method="POST" class="w-full flex gap-4" @submit.prevent="fetch($el.action, {
+                                <div class="flex items-center space-x-4 mb-8" x-data>
+                                    <form action="{{ route('cart.add') }}" method="POST" class="w-full flex gap-4" @submit.prevent="fetch($el.action, {
                                         method: 'POST',
                                         body: new FormData($el),
                                         headers: {
@@ -79,7 +86,11 @@
                                     .then(async r => {
                                         if (!r.ok) {
                                             const error = await r.json();
-                                            alert('Error adding to cart: ' + (error.message || 'Unknown error'));
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Oops...',
+                                                text: 'Error adding to cart: ' + (error.message || 'Unknown error')
+                                            });
                                             return;
                                         }
                                         return r.json();
@@ -93,7 +104,11 @@
                                     })
                                     .catch(e => {
                                         console.error(e);
-                                        alert('System Error: ' + e);
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'System Error',
+                                            text: e.toString()
+                                        });
                                     })">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -107,6 +122,14 @@
                                             {{ __('Add to Cart') }}
                                         </button>
                                     </form>
+
+                                    <!-- Wishlist Button -->
+                                    <button type="button" 
+                                            @click.prevent="$dispatch('open-add-to-wishlist', { productId: {{ $product->id }} })"
+                                            class="px-4 py-3 rounded-lg border border-gray-300 text-gray-500 hover:text-red-500 hover:border-red-500 hover:bg-red-50 transition duration-300 shadow-sm flex items-center justify-center" 
+                                            title="Add to Wishlist">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                    </button>
                                 </div>
                                 
                                 @if(session('success'))
@@ -119,24 +142,54 @@
                                 <div class="border-t border-gray-200 pt-4 text-sm text-gray-500">
                                     <p>{{ __('SKU:') }} <span class="text-gray-700">{{ $product->sku }}</span></p>
                                     @if($product->categories->isNotEmpty())
-                                        <p>{{ __('Categories:') }} <span class="text-gray-700">{{ $product->categories->pluck('name')->join(', ') }}</span></p>
+                                        <p>{{ __('Categories:') }} 
+                                            <span class="text-gray-700">
+                                                @foreach($product->categories as $category)
+                                                    <a href="{{ route('products.category', $category->slug) }}" class="hover:text-indigo-600 hover:underline">
+                                                        {{ $category->name }}
+                                                    </a>@if(!$loop->last), @endif
+                                                @endforeach
+                                            </span>
+                                        </p>
                                     @endif
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Bottom Section: Description & Reviews -->
-                        <div class="border-t border-gray-300 p-8 bg-gray-50/50">
-                            <!-- Tabs (Simple visual separation for now) -->
-                            <div class="mb-8">
-                                <h3 class="text-2xl font-bold text-gray-900 border-b-2 border-indigo-600 inline-block pb-2 mb-6">{{ __('Description') }}</h3>
+                        <!-- Bottom Section: Tabs -->
+                        <div class="border-t border-gray-300 p-8 bg-gray-50/50" x-data="{ activeTab: 'description' }">
+                            <!-- Tab Headers -->
+                            <div class="mb-8 border-b border-gray-200">
+                                <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+                                    <button @click.prevent="activeTab = 'description'"
+                                        :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'description', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'description' }"
+                                        class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm uppercase tracking-wide transition-colors">
+                                        {{ __('Description') }}
+                                    </button>
+
+                                    <button @click.prevent="activeTab = 'reviews'"
+                                        :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'reviews', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'reviews' }"
+                                        class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm uppercase tracking-wide transition-colors">
+                                        {{ __('Customer Reviews') }} ({{ $product->reviews->count() }})
+                                    </button>
+
+                                    <button @click.prevent="activeTab = 'guarantee'"
+                                        :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'guarantee', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'guarantee' }"
+                                        class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm uppercase tracking-wide transition-colors">
+                                        {{ __('Guarantee') }}
+                                    </button>
+                                </nav>
+                            </div>
+
+                            <!-- Description Tab -->
+                            <div x-show="activeTab === 'description'" x-transition:enter.opacity.duration.300ms>
                                 <div class="prose max-w-none text-gray-700">
                                     {!! nl2br(e($product->description)) !!}
                                 </div>
                             </div>
 
-                            <div class="border-t border-gray-300 pt-8">
-                                <h3 class="text-2xl font-bold text-gray-900 border-b-2 border-indigo-600 inline-block pb-2 mb-6">{{ __('Customer Reviews') }}</h3>
+                            <!-- Reviews Tab -->
+                            <div x-show="activeTab === 'reviews'" x-transition:enter.opacity.duration.300ms>
                                 
                                 <!-- Write Review Form -->
                                 @auth
@@ -204,6 +257,30 @@
                                         @endforeach
                                     </div>
                                 @endif
+                            </div>
+
+                            <!-- Guarantee Tab -->
+                            <div x-show="activeTab === 'guarantee'" x-transition:enter.opacity.duration.300ms>
+                                <div class="prose max-w-none text-gray-700">
+                                    @if($product->guarantee)
+                                        {!! nl2br(e($product->guarantee)) !!}
+                                    @else
+                                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                                            <div class="flex">
+                                                <div class="flex-shrink-0">
+                                                    <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <p class="text-sm text-blue-700">
+                                                        {{ __('Standard manufacturer warranty applies to this product.') }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
 

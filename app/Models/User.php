@@ -52,9 +52,15 @@ class User extends Authenticatable
         ];
     }
 
-    public function wishlist()
+    public function wishlists(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Wishlist::class);
+    }
+    
+    // Helper to get the default wishlist items easily
+    public function wishlistItems()
+    {
+        return $this->hasManyThrough(WishlistItem::class, Wishlist::class);
     }
 
     public function addresses()

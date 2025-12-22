@@ -20,10 +20,12 @@ class Product extends Model
         'slug',
         'short_description',
         'description',
+        'guarantee',
         'is_digital',
         'is_active',
         'is_featured',
         'base_price',
+        'discount_price',
         'cost_price',
         'tax_id',
         'weight',
@@ -43,6 +45,7 @@ class Product extends Model
         'is_featured' => 'boolean',
         'has_combinations' => 'boolean',
         'base_price' => 'decimal:2',
+        'discount_price' => 'decimal:2',
         'cost_price' => 'decimal:2',
         'weight' => 'decimal:2',
         'width' => 'decimal:2',
@@ -109,6 +112,11 @@ class Product extends Model
     public function getBasePriceFormattedAttribute()
     {
         return number_format($this->base_price, 2, ',', '.') . ' €';
+    }
+
+    public function getDiscountPriceFormattedAttribute()
+    {
+        return $this->discount_price ? number_format($this->discount_price, 2, ',', '.') . ' €' : null;
     }
 
     public function getIsLowStockAttribute()

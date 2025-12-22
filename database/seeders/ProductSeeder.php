@@ -86,9 +86,11 @@ class ProductSeeder extends Seeder
                     'slug' => Str::slug($item['name']) . '-' . rand(1000, 9999),
                     'short_description' => 'This is a premium product designed for excellence. ' . $item['name'] . ' offers the best value.',
                     'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    'guarantee' => 'We offer a 2-year warranty on this product. If you encounter any issues, please contact our support team for assistance.',
                     'base_price' => $item['price'],
+                    'discount_price' => rand(0, 100) < 30 ? $item['price'] * 0.8 : null,
                     'tax_id' => $taxes->random()->id,
-                    'stock_quantity' => rand(10, 100),
+                    'stock_quantity' => rand(0, 100) < 10 ? 0 : rand(10, 100),
                     'is_active' => true,
                     'is_featured' => rand(0, 1) === 1,
                 ]);

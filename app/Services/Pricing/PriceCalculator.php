@@ -14,7 +14,7 @@ class PriceCalculator
 
     public function calculate(Product $product, int $quantity = 1): float
     {
-        $price = $product->base_price;
+        $price = $product->discount_price ?? $product->base_price;
 
         // Apply Price Rules (Simplified for now)
         $rules = PriceRule::where('is_active', true)

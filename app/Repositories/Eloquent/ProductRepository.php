@@ -58,6 +58,7 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return $this->model->with(['brand', 'images'])
                            ->active()
+                           ->inStock()
                            ->featured()
                            ->limit($limit)
                            ->get();
@@ -67,6 +68,7 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return $this->model->with(['brand', 'images'])
                            ->active()
+                           ->inStock()
                            ->latest()
                            ->limit($limit)
                            ->get();
@@ -76,6 +78,7 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return $this->model->with(['brand', 'images'])
                            ->active()
+                           ->inStock()
                            ->orderBy('sales_count', 'desc')
                            ->limit($limit)
                            ->get();
@@ -85,6 +88,7 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return $this->model->with(['brand', 'images'])
                            ->active()
+                           ->inStock()
                            ->whereFullText(['name', 'short_description', 'description'], $query)
                            ->get();
     }
@@ -93,6 +97,7 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return $this->model->with(['brand', 'images'])
                            ->active()
+                           ->inStock()
                            ->whereHas('categories', function ($q) use ($categoryId) {
                                $q->where('categories.id', $categoryId);
                            })
@@ -101,7 +106,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getFiltered(array $filters, int $perPage = 12): LengthAwarePaginator
     {
-        $query = $this->model->with(['brand', 'images'])->active();
+        $query = $this->model->with(['brand', 'images'])->active()->inStock();
 
         if (!empty($filters['search'])) {
              // Fallback to LIKE if FullText is not set up or for partial matches

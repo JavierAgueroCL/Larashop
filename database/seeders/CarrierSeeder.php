@@ -33,21 +33,29 @@ class CarrierSeeder extends Seeder
         // 2. Create Zones (Simplified)
         $zone = ShippingZone::create(['name' => 'Europe']);
         
-        // 3. Create Rates (Simplified)
+        // 3. Create Rates
         // Standard: 5.00 flat rate
         $standard = Carrier::where('name', 'standard')->first();
-        $standard->shippingRates()->create([ // Assumes relation in Carrier model, wait, I didn't add hasMany rates to Carrier
-            'shipping_zone_id' => $zone->id,
-            'calculation_type' => 'flat_rate',
-            'cost' => 5.00,
-        ]);
+        if ($standard && $standard->shippingRates()->count() === 0) {
+            $standard->shippingRates()->create([
+                'shipping_zone_id' => $zone->id,
+                'calculation_type' => 'flat_rate',
+                'min_value' => 0,
+                'max_value' => 10000,
+                'cost' => 5.00,
+            ]);
+        }
 
         // Express: 15.00 flat rate
         $express = Carrier::where('name', 'express')->first();
-        $express->shippingRates()->create([ // Need relation
-            'shipping_zone_id' => $zone->id,
-            'calculation_type' => 'flat_rate',
-            'cost' => 15.00,
-        ]);
+        if ($express && $express->shippingRates()->count() === 0) {
+            $express->shippingRates()->create([
+                'shipping_zone_id' => $zone->id,
+                'calculation_type' => 'flat_rate',
+                'min_value' => 0,
+                'max_value' => 10000,
+                'cost' => 15.00,
+            ]);
+        }
     }
 }

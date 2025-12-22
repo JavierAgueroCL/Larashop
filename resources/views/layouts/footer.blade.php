@@ -7,11 +7,26 @@
  <h3 class="text-2xl font-bold text-white mb-1">Subscribe Our Newsletter</h3>
  <p class="text-white text-opacity-80">Subscribe to our newsletter and get 10% off your first purchase</p>
  </div>
- <div class="w-full md:w-1/2">
- <form class="flex">
- <input type="email" placeholder="Your Email Address" class="w-full px-4 py-3 rounded-l-md border-none focus:ring-0 text-gray-800">
-                         <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-r-md font-bold hover:bg-indigo-700 transition-colors uppercase tracking-wide">Subscribe</button> </form>
- </div>
+            <div class="w-full md:w-1/2">
+                @if(session('success') && str_contains(session('success'), 'newsletter'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        <span class="block sm:inline">{{ session('success') }}</span>
+                    </div>
+                @elseif(session('info') && str_contains(session('info'), 'newsletter'))
+                    <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                         <span class="block sm:inline">{{ session('info') }}</span>
+                    </div>
+                @else
+                    <form action="{{ route('newsletter.subscribe') }}" method="POST" class="flex flex-col sm:flex-row gap-2 sm:gap-0">
+                        @csrf
+                        <input type="email" name="email" placeholder="Your Email Address" required class="w-full px-4 py-3 rounded-md sm:rounded-l-md sm:rounded-r-none border-none focus:ring-0 text-gray-800" value="{{ old('email') }}">
+                        <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-md sm:rounded-l-none sm:rounded-r-md font-bold hover:bg-indigo-700 transition-colors uppercase tracking-wide">Subscribe</button>
+                    </form>
+                    @error('email')
+                        <p class="text-red-200 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                @endif
+            </div>
  </div>
  </div>
  </div>

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Category;
 use App\View\Composers\CartComposer;
+use App\View\Composers\WishlistComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,5 +34,6 @@ class ViewServiceProvider extends ServiceProvider
         });
 
         View::composer('components.layout.main-header', CartComposer::class);
+        View::composer('components.layout.main-header', WishlistComposer::class);
     }
 }

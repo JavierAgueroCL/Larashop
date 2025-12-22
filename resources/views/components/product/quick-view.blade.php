@@ -1,7 +1,6 @@
 <div class="relative bg-white rounded-lg max-w-2xl w-full p-6 shadow-xl">
- <button @click="quickViewOpen = false" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 ">
- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12" />
+    <button @click="open = false" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 ">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12" />
  </svg>
  </button>
  

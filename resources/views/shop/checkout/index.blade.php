@@ -7,7 +7,79 @@
 
  <div class="py-12 bg-gray-50">
  <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
- <form action="{{ route('checkout.process') }}" method="POST">
+ <form action="{{ route('checkout.process') }}" method="POST"
+      x-data="{
+         // Address Logic
+         selectedAddress: '{{ old('shipping_address_id', $addresses->isNotEmpty() ? $addresses->first()->id : 'new') }}', 
+         showForm: {{ $addresses->isEmpty() || old('shipping_address_id') == 'new' ? 'true' : 'false' }},
+         addresses: {{ $addresses->toJson() }},
+         form: {
+             alias: '{{ old('shipping_address.alias') }}',
+             first_name: '{{ old('shipping_address.first_name', $user->first_name ?? '') }}',
+             last_name: '{{ old('shipping_address.last_name', $user->last_name ?? '') }}',
+             address_line_1: '{{ old('shipping_address.address_line_1') }}',
+             city: '{{ old('shipping_address.city') }}',
+             postal_code: '{{ old('shipping_address.postal_code') }}',
+             country_code: '{{ old('shipping_address.country_code', 'ES') }}',
+             phone: '{{ old('shipping_address.phone', $user->phone ?? '') }}'
+         },
+         
+         // Shipping & Totals Logic
+         carriers: {{ $carriers->toJson() }},
+         selectedShippingMethod: '{{ old('shipping_method', $carriers->first()->name ?? '') }}',
+         shippingCost: 0,
+         subtotal: {{ $totals['subtotal'] }},
+         tax: {{ $totals['tax'] }},
+         discount: {{ $totals['discount'] ?? 0 }},
+
+         get total() {
+             return (this.subtotal + this.tax + this.shippingCost - this.discount).toFixed(2);
+         },
+
+         selectAddress(id) {
+             this.selectedAddress = id;
+             if (id === 'new') {
+                 this.showForm = true;
+                 this.clearForm();
+             } else {
+                 this.showForm = false;
+                 this.populateForm(id);
+             }
+         },
+         populateForm(id) {
+             const addr = this.addresses.find(a => a.id == id);
+             if (addr) {
+                 this.form.alias = addr.alias;
+                 this.form.first_name = addr.first_name;
+                 this.form.last_name = addr.last_name;
+                 this.form.address_line_1 = addr.address_line_1;
+                 this.form.city = addr.city;
+                 this.form.postal_code = addr.postal_code;
+                 this.form.country_code = addr.country_code;
+                 this.form.phone = addr.phone;
+             }
+         },
+         clearForm() {
+             this.form.alias = '';
+             this.form.first_name = '{{ $user->first_name ?? '' }}';
+             this.form.last_name = '{{ $user->last_name ?? '' }}';
+             this.form.address_line_1 = '';
+             this.form.city = '';
+             this.form.postal_code = '';
+             this.form.country_code = 'ES';
+             this.form.phone = '{{ $user->phone ?? '' }}';
+         },
+         updateShipping() {
+             const carrier = this.carriers.find(c => c.name == this.selectedShippingMethod);
+             this.shippingCost = carrier ? parseFloat(carrier.calculated_cost) : 0;
+         },
+         init() {
+             if(this.selectedAddress !== 'new' && this.addresses.length > 0) {
+                 this.populateForm(this.selectedAddress);
+             }
+             this.updateShipping();
+         }
+      }">
  @csrf
 
  @if ($errors->any())
@@ -28,60 +100,7 @@
  <div class="w-full md:w-2/3 space-y-6">
  
                          <!-- Shipping Address -->
-                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100" 
-                              x-data="{
-                                 selectedAddress: '{{ old('shipping_address_id', $addresses->isNotEmpty() ? $addresses->first()->id : 'new') }}', 
-                                 showForm: {{ $addresses->isEmpty() || old('shipping_address_id') == 'new' ? 'true' : 'false' }},
-                                 addresses: {{ $addresses->toJson() }},
-                                form: {
-                                    alias: '{{ old('shipping_address.alias') }}',
-                                    first_name: '{{ old('shipping_address.first_name', $user->first_name ?? '') }}',
-                                    last_name: '{{ old('shipping_address.last_name', $user->last_name ?? '') }}',
-                                    address_line_1: '{{ old('shipping_address.address_line_1') }}',
-                                    city: '{{ old('shipping_address.city') }}',
-                                    postal_code: '{{ old('shipping_address.postal_code') }}',
-                                    country_code: '{{ old('shipping_address.country_code', 'ES') }}',
-                                    phone: '{{ old('shipping_address.phone', $user->phone ?? '') }}'
-                                },
-                                selectAddress(id) {
-                                    this.selectedAddress = id;
-                                    if (id === 'new') {
-                                        this.showForm = true;
-                                        this.clearForm();
-                                    } else {
-                                        this.showForm = false;
-                                        this.populateForm(id);
-                                    }
-                                },
-                                populateForm(id) {
-                                    const addr = this.addresses.find(a => a.id == id);
-                                    if (addr) {
-                                        this.form.alias = addr.alias;
-                                        this.form.first_name = addr.first_name;
-                                        this.form.last_name = addr.last_name;
-                                        this.form.address_line_1 = addr.address_line_1;
-                                        this.form.city = addr.city;
-                                        this.form.postal_code = addr.postal_code;
-                                        this.form.country_code = addr.country_code;
-                                        this.form.phone = addr.phone;
-                                    }
-                                },
-                                clearForm() {
-                                    this.form.alias = '';
-                                    this.form.first_name = '{{ $user->first_name ?? '' }}';
-                                    this.form.last_name = '{{ $user->last_name ?? '' }}';
-                                    this.form.address_line_1 = '';
-                                    this.form.city = '';
-                                    this.form.postal_code = '';
-                                    this.form.country_code = 'ES';
-                                    this.form.phone = '{{ $user->phone ?? '' }}';
-                                },
-                                 init() {
-                                     if(this.selectedAddress !== 'new' && this.addresses.length > 0) {
-                                         this.populateForm(this.selectedAddress);
-                                     }
-                                 }
-                              }">
+                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                              <div class="flex justify-between items-center mb-6">
                                  <h3 class="text-lg font-bold text-gray-900">{{ __('Shipping Address') }}</h3>
                              </div>
@@ -223,6 +242,31 @@
  @endguest
  </div>
 
+ <!-- Shipping Method -->
+ <div class="bg-white p-6 rounded-lg shadow-md border border-gray-300">
+     <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('Shipping Method') }}</h3>
+     <div class="space-y-4">
+         @foreach($carriers as $carrier)
+             <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:border-indigo-500 transition-colors"
+                    :class="selectedShippingMethod == '{{ $carrier->name }}' ? 'border-indigo-500 ring-1 ring-indigo-500 bg-indigo-50' : 'border-gray-300'">
+                 <input type="radio" 
+                        name="shipping_method" 
+                        value="{{ $carrier->name }}" 
+                        x-model="selectedShippingMethod"
+                        @change="updateShipping()"
+                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                 <div class="ml-3 flex-1 flex justify-between">
+                     <div>
+                         <span class="block font-medium text-gray-900">{{ $carrier->display_name }}</span>
+                         <span class="block text-sm text-gray-500">{{ $carrier->delay }}</span>
+                     </div>
+                     <span class="font-bold text-gray-900">{{ number_format($carrier->calculated_cost, 2) }} €</span>
+                 </div>
+             </label>
+         @endforeach
+     </div>
+ </div>
+
  <!-- Payment Method -->
  <div class="bg-white p-6 rounded-lg shadow-md border border-gray-300">
  <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('Payment Method') }}</h3>
@@ -263,15 +307,25 @@
  <div class="border-t border-gray-200 pt-4 space-y-3">
  <div class="flex justify-between text-sm text-gray-700">
  <span>{{ __('Subtotal') }}</span>
- <span>{{ number_format($totals['subtotal'], 2) }} €</span>
+ <span x-text="subtotal.toFixed(2) + ' €'">{{ number_format($totals['subtotal'], 2) }} €</span>
  </div>
  <div class="flex justify-between text-sm text-gray-700">
  <span>{{ __('Tax') }}</span>
- <span>{{ number_format($totals['tax'], 2) }} €</span>
+ <span x-text="tax.toFixed(2) + ' €'">{{ number_format($totals['tax'], 2) }} €</span>
  </div>
+ <div class="flex justify-between text-sm text-gray-700">
+ <span>{{ __('Shipping') }}</span>
+ <span x-text="shippingCost.toFixed(2) + ' €'">0.00 €</span>
+ </div>
+ @if($totals['discount'] > 0)
+ <div class="flex justify-between text-sm text-green-600">
+ <span>{{ __('Discount') }}</span>
+ <span>-{{ number_format($totals['discount'], 2) }} €</span>
+ </div>
+ @endif
  <div class="flex justify-between text-lg font-bold text-gray-900">
  <span>{{ __('Total') }}</span>
- <span>{{ number_format($totals['total'], 2) }} €</span>
+ <span x-text="total + ' €'">{{ number_format($totals['total'], 2) }} €</span>
  </div>
  </div>
 

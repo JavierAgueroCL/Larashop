@@ -93,10 +93,24 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Cart updated!');
     }
 
-    public function remove(int $itemId): RedirectResponse
+    public function remove(Request $request, int $itemId)
     {
         $cart = $this->cartService->getCart(Auth::user());
         $this->cartService->removeItem($cart, $itemId);
+
+        if ($request->wantsJson()) {
+            $cartCount = $cart->items()->sum('quantity');
+            $cart->load('items.product.images');
+            $totals = $this->cartService->getCartTotals($cart);
+            $sidebarHtml = view('components.cart.sidebar-content', compact('cart', 'totals'))->render();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Item removed from cart!',
+                'cartCount' => $cartCount,
+                'html' => $sidebarHtml
+            ]);
+        }
 
         return redirect()->route('cart.index')->with('success', 'Item removed from cart!');
     }
