@@ -59,6 +59,10 @@ Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])-
 // Payment Routes
 Route::match(['get', 'post'], '/payment/transbank/callback', [App\Http\Controllers\Shop\PaymentController::class, 'callback'])->name('payment.transbank.callback');
 
+// Locations (AJAX)
+Route::get('/locations/regions', [\App\Http\Controllers\Api\LocationController::class, 'regions'])->name('locations.regions');
+Route::get('/locations/regions/{region}/comunas', [\App\Http\Controllers\Api\LocationController::class, 'comunas'])->name('locations.comunas');
+
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     // Dashboard

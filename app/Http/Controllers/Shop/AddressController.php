@@ -33,7 +33,8 @@ class AddressController extends Controller
     public function create(Request $request)
     {
         $type = $request->query('type', 'shipping');
-        return view('shop.dashboard.addresses.create', compact('type'));
+        $regions = \App\Models\Region::all();
+        return view('shop.dashboard.addresses.create', compact('type', 'regions'));
     }
 
     /**
@@ -49,10 +50,14 @@ class AddressController extends Controller
             'company' => 'nullable|string|max:255',
             'address_line_1' => 'required|string|max:255',
             'address_line_2' => 'nullable|string|max:255',
-            'city' => 'required|string|max:255',
-            'state_province' => 'nullable|string|max:255',
+            'region_id' => 'required|exists:regiones,id',
+            'comuna_id' => 'required|exists:comunas,id',
             'country_code' => 'required|string|max:2',
             'phone' => 'required|string|max:20',
+            'rut' => 'required|string|max:20',
+            'document_type' => 'nullable|in:boleta,factura', // Virtual field for validation logic
+            'company' => 'required_if:document_type,factura|nullable|string|max:255',
+            'business_activity' => 'required_if:document_type,factura|nullable|string|max:255',
             'is_default' => 'boolean',
         ]);
 
@@ -60,9 +65,6 @@ class AddressController extends Controller
 
         // Enforce alias requirement for shipping
         if ($validated['address_type'] === 'shipping' && empty($validated['alias'])) {
-             // Default alias if not provided? Or make it required validation?
-             // User prompt said "User enters it". So it should be required for shipping.
-             // But let's handle it gracefully if missing by using First Name or "My Address"
              $validated['alias'] = $validated['alias'] ?? 'My Address';
         }
 
@@ -99,7 +101,8 @@ class AddressController extends Controller
         if ($address->user_id !== Auth::id()) {
             abort(403);
         }
-        return view('shop.dashboard.addresses.edit', compact('address'));
+        $regions = \App\Models\Region::all();
+        return view('shop.dashboard.addresses.edit', compact('address', 'regions'));
     }
 
     /**
@@ -119,10 +122,14 @@ class AddressController extends Controller
             'company' => 'nullable|string|max:255',
             'address_line_1' => 'required|string|max:255',
             'address_line_2' => 'nullable|string|max:255',
-            'city' => 'required|string|max:255',
-            'state_province' => 'nullable|string|max:255',
+            'region_id' => 'required|exists:regiones,id',
+            'comuna_id' => 'required|exists:comunas,id',
             'country_code' => 'required|string|max:2',
             'phone' => 'required|string|max:20',
+            'rut' => 'required|string|max:20',
+            'document_type' => 'nullable|in:boleta,factura',
+            'company' => 'required_if:document_type,factura|nullable|string|max:255',
+            'business_activity' => 'required_if:document_type,factura|nullable|string|max:255',
             'is_default' => 'boolean',
         ]);
 

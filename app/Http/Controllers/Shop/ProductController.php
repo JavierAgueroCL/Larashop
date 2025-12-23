@@ -26,7 +26,12 @@ class ProductController extends Controller
 
         $filters = $request->only(['search', 'sort']);
         
-        $products = $this->productRepository->getFiltered($filters, 12);
+        $perPage = $request->input('per_page', 12);
+        if (!in_array($perPage, [12, 24, 36, 48])) {
+            $perPage = 12;
+        }
+
+        $products = $this->productRepository->getFiltered($filters, $perPage);
         
         $categories = Category::whereNull('parent_id')->with('children')->get();
 
@@ -41,7 +46,12 @@ class ProductController extends Controller
         $filters = $request->only(['search', 'sort']);
         $filters['category'] = $categorySlug;
 
-        $products = $this->productRepository->getFiltered($filters, 12);
+        $perPage = $request->input('per_page', 12);
+        if (!in_array($perPage, [12, 24, 36, 48])) {
+            $perPage = 12;
+        }
+
+        $products = $this->productRepository->getFiltered($filters, $perPage);
         $categories = Category::whereNull('parent_id')->with('children')->get();
 
         // Pass current category for UI highlighting

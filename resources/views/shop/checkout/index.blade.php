@@ -13,6 +13,7 @@
                       selectedAddress: '{{ old('shipping_address_id', $addresses->isNotEmpty() ? $addresses->first()->id : 'new') }}', 
                       showForm: {{ $addresses->isEmpty() || old('shipping_address_id') == 'new' ? 'true' : 'false' }},
                       addresses: {{ $addresses->toJson() }},
+                      regions: {{ $regions->toJson() }},
                       
                       isAuth: {{ Auth::check() ? 'true' : 'false' }},
                       
@@ -22,21 +23,29 @@
                           first_name: '{{ old('shipping_address.first_name', $user->first_name ?? '') }}',
                           last_name: '{{ old('shipping_address.last_name', $user->last_name ?? '') }}',
                           address_line_1: '{{ old('shipping_address.address_line_1') }}',
-                          city: '{{ old('shipping_address.city') }}',
+                          region_id: '{{ old('shipping_address.region_id') }}',
+                          comuna_id: '{{ old('shipping_address.comuna_id') }}',
                           country_code: '{{ old('shipping_address.country_code', 'CL') }}',
                           phone: '{{ old('shipping_address.phone', $user->phone ?? '') }}'
                       },
+                      shippingComunas: [],
                       
                       // Guest Billing Logic
                       useBillingForShipping: true,
                       billing: {
                           first_name: '{{ old('billing_address.first_name') }}',
                           last_name: '{{ old('billing_address.last_name') }}',
+                          rut: '{{ old('billing_address.rut') }}',
+                          document_type: '{{ old('billing_address.document_type', 'boleta') }}',
+                          company: '{{ old('billing_address.company') }}',
+                          business_activity: '{{ old('billing_address.business_activity') }}',
                           address_line_1: '{{ old('billing_address.address_line_1') }}',
-                          city: '{{ old('billing_address.city') }}',
+                          region_id: '{{ old('billing_address.region_id') }}',
+                          comuna_id: '{{ old('billing_address.comuna_id') }}',
                           country_code: 'CL',
                           phone: '{{ old('billing_address.phone') }}'
                       },
+                      billingComunas: [],
                       
                       // Shipping & Totals Logic
                       carriers: {{ $carriers->toJson() }},
@@ -67,7 +76,8 @@
                               this.form.first_name = addr.first_name;
                               this.form.last_name = addr.last_name;
                               this.form.address_line_1 = addr.address_line_1;
-                              this.form.city = addr.city;
+                              this.form.region_id = addr.region_id;
+                              this.form.comuna_id = addr.comuna_id;
                               this.form.country_code = addr.country_code;
                               this.form.phone = addr.phone;
                           }
@@ -77,7 +87,8 @@
                           this.form.first_name = '{{ $user->first_name ?? '' }}';
                           this.form.last_name = '{{ $user->last_name ?? '' }}';
                           this.form.address_line_1 = '';
-                          this.form.city = '';
+                          this.form.region_id = '';
+                          this.form.comuna_id = '';
                           this.form.country_code = 'CL';
                           this.form.phone = '{{ $user->phone ?? '' }}';
                       },
@@ -90,10 +101,23 @@
                               this.form.first_name = this.billing.first_name;
                               this.form.last_name = this.billing.last_name;
                               this.form.address_line_1 = this.billing.address_line_1;
-                              this.form.city = this.billing.city;
+                              this.form.region_id = this.billing.region_id;
+                              this.form.comuna_id = this.billing.comuna_id;
                               this.form.country_code = this.billing.country_code;
                               this.form.phone = this.billing.phone;
                           }
+                      },
+                      fetchComunas(regionId, type) {
+                          if (!regionId) return;
+                          fetch(`/locations/regions/${regionId}/comunas`)
+                              .then(res => res.json())
+                              .then(data => {
+                                  if (type === 'billing') {
+                                      this.billingComunas = data;
+                                  } else {
+                                      this.shippingComunas = data;
+                                  }
+                              });
                       },
                       init() {
                           if(this.selectedAddress !== 'new' && this.addresses.length > 0) {
@@ -101,9 +125,25 @@
                           }
                           this.updateShipping();
                           
-                          // Watch for billing changes to sync
-                          this.$watch('billing', () => this.syncBilling());
+                          // Watchers
+                          this.$watch('billing.region_id', val => {
+                              if(val) this.fetchComunas(val, 'billing');
+                              else this.billingComunas = [];
+                              this.billing.comuna_id = '';
+                              this.syncBilling();
+                          });
+                          
+                          this.$watch('form.region_id', val => {
+                              if(val) this.fetchComunas(val, 'shipping');
+                              else this.shippingComunas = [];
+                          });
+
+                          this.$watch('billing', () => this.syncBilling(), { deep: true });
                           this.$watch('useBillingForShipping', () => this.syncBilling());
+
+                          // Initial Fetch
+                          if(this.billing.region_id) this.fetchComunas(this.billing.region_id, 'billing');
+                          if(this.form.region_id) this.fetchComunas(this.form.region_id, 'shipping');
                       }
                   }">
                 @csrf
@@ -139,6 +179,39 @@
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    
+                                    <!-- Document Type -->
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Tipo de Documento') }}</label>
+                                        <div class="flex items-center gap-4">
+                                            <label class="flex items-center">
+                                                <input type="radio" name="billing_address[document_type]" value="boleta" x-model="billing.document_type" class="text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                                <span class="ml-2 text-sm text-gray-700">{{ __('Boleta') }}</span>
+                                            </label>
+                                            <label class="flex items-center">
+                                                <input type="radio" name="billing_address[document_type]" value="factura" x-model="billing.document_type" class="text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                                <span class="ml-2 text-sm text-gray-700">{{ __('Factura') }}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('RUT') }}</label>
+                                        <input type="text" name="billing_address[rut]" x-model="billing.rut" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                    </div>
+
+                                    <!-- Company (Conditional) -->
+                                    <div x-show="billing.document_type === 'factura'">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Razón Social') }}</label>
+                                        <input type="text" name="billing_address[company]" x-model="billing.company" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                    </div>
+
+                                    <!-- Giro (Conditional) -->
+                                    <div x-show="billing.document_type === 'factura'">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Giro') }}</label>
+                                        <input type="text" name="billing_address[business_activity]" x-model="billing.business_activity" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                    </div>
+
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Nombre') }}</label>
                                         <input type="text" name="billing_address[first_name]" x-model="billing.first_name" @input="syncBilling" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
@@ -151,10 +224,26 @@
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Dirección') }}</label>
                                         <input type="text" name="billing_address[address_line_1]" x-model="billing.address_line_1" @input="syncBilling" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
+                                    
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Ciudad') }}</label>
-                                        <input type="text" name="billing_address[city]" x-model="billing.city" @input="syncBilling" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Región') }}</label>
+                                        <select name="billing_address[region_id]" x-model="billing.region_id" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                            <option value="">{{ __('Seleccione') }}</option>
+                                            <template x-for="region in regions" :key="region.id">
+                                                <option :value="region.id" x-text="region.region"></option>
+                                            </template>
+                                        </select>
                                     </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Comuna') }}</label>
+                                        <select name="billing_address[comuna_id]" x-model="billing.comuna_id" :disabled="!billingComunas.length" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                            <option value="">{{ __('Seleccione') }}</option>
+                                            <template x-for="comuna in billingComunas" :key="comuna.id">
+                                                <option :value="comuna.id" x-text="comuna.comuna"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('País') }}</label>
                                         <input type="text" value="Chile" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-600 cursor-not-allowed">
@@ -162,7 +251,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
-                                        <input type="text" name="billing_address[phone]" x-model="billing.phone" @input="syncBilling" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                        <input type="text" name="billing_address[phone]" x-model="billing.phone" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +260,7 @@
                         <!-- Shipping Address -->
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                             <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-lg font-bold text-gray-900">{{ __('Dirección de envío') }}</h3>
+                                <h3 class="text-lg font-bold text-gray-900">{{ __('Dirección de Envío') }}</h3>
                             </div>
                             
                             <input type="hidden" name="shipping_address_id" :value="selectedAddress">
@@ -192,7 +281,7 @@
                                                 </div>
                                                 <div class="ml-3 text-sm">
                                                     <span class="block font-bold text-gray-900">{{ $address->alias ?? 'Address' }}</span>
-                                                    <span class="block text-gray-600">{{ $address->address_line_1 }}, {{ $address->city }}</span>
+                                                    <span class="block text-gray-600">{{ $address->address_line_1 }}, {{ $address->comuna->comuna ?? '' }}</span>
                                                     <span class="block text-gray-500">{{ $address->country_code }} - {{ $address->phone }}</span>
                                                 </div>
                                             </label>
@@ -240,9 +329,24 @@
                                         <input type="text" name="shipping_address[address_line_1]" x-model="form.address_line_1" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Ciudad') }}</label>
-                                        <input type="text" name="shipping_address[city]" x-model="form.city" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Región') }}</label>
+                                        <select name="shipping_address[region_id]" x-model="form.region_id" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                            <option value="">{{ __('Seleccione') }}</option>
+                                            <template x-for="region in regions" :key="region.id">
+                                                <option :value="region.id" x-text="region.region"></option>
+                                            </template>
+                                        </select>
                                     </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Comuna') }}</label>
+                                        <select name="shipping_address[comuna_id]" x-model="form.comuna_id" :disabled="!shippingComunas.length" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                            <option value="">{{ __('Seleccione') }}</option>
+                                            <template x-for="comuna in shippingComunas" :key="comuna.id">
+                                                <option :value="comuna.id" x-text="comuna.comuna"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('País') }}</label>
                                         <input type="text" value="Chile" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-600 cursor-not-allowed">
@@ -252,7 +356,6 @@
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
                                         <input type="text" name="shipping_address[phone]" x-model="form.phone" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
-                                    <input type="hidden" name="shipping_address[state_province]" value="NA"> 
                                 </div>
                             </div>
                             
@@ -262,7 +365,8 @@
                                     <input type="hidden" name="shipping_address[first_name]" :value="form.first_name">
                                     <input type="hidden" name="shipping_address[last_name]" :value="form.last_name">
                                     <input type="hidden" name="shipping_address[address_line_1]" :value="form.address_line_1">
-                                    <input type="hidden" name="shipping_address[city]" :value="form.city">
+                                    <input type="hidden" name="shipping_address[region_id]" :value="form.region_id">
+                                    <input type="hidden" name="shipping_address[comuna_id]" :value="form.comuna_id">
                                     <input type="hidden" name="shipping_address[country_code]" :value="form.country_code">
                                     <input type="hidden" name="shipping_address[phone]" :value="form.phone">
                                     <input type="hidden" name="shipping_address[alias]" value="Billing Copy">
@@ -350,7 +454,7 @@
                     <!-- Right Column: Order Summary -->
                     <div class="w-full md:w-1/3">
                         <div class="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-300 sticky top-6">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('Resumen del pedido') }}</h3>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('Resumen del Pedido') }}</h3>
                             
                             <div class="space-y-4 mb-6">
                                 @foreach($cart->items as $item)

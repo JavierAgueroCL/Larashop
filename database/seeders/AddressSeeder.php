@@ -28,8 +28,8 @@ class AddressSeeder extends Seeder
             'first_name' => $user->first_name ?? 'Admin',
             'last_name' => $user->last_name ?? 'User',
             'address_line_1' => 'Av. Providencia 1234',
-            'city' => 'Santiago',
-            'state_province' => 'RM',
+            'region_id' => 7, // RM
+            'comuna_id' => 96, // Providencia
             'country_code' => 'CL',
             'phone' => '+56912345678',
             'is_default' => true,
@@ -45,8 +45,8 @@ class AddressSeeder extends Seeder
             'company' => 'LaraShop SpA',
             'address_line_1' => 'Moneda 999',
             'address_line_2' => 'Oficina 303',
-            'city' => 'Santiago',
-            'state_province' => 'RM',
+            'region_id' => 7, // RM
+            'comuna_id' => 86, // Santiago
             'country_code' => 'CL',
             'phone' => '+56222222222',
             'is_default' => true,

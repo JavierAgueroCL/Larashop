@@ -16,11 +16,13 @@ class Address extends Model
         'alias',
         'first_name',
         'last_name',
+        'rut',
         'company',
+        'business_activity',
         'address_line_1',
         'address_line_2',
-        'city',
-        'state_province',
+        'region_id',
+        'comuna_id',
         'country_code',
         'phone',
         'is_default',
@@ -33,5 +35,15 @@ class Address extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
+    }
+
+    public function comuna(): BelongsTo
+    {
+        return $this->belongsTo(Comuna::class);
     }
 }

@@ -44,8 +44,9 @@ class CheckoutController extends Controller
         // For now, we assume "Europe" zone default.
         $dummyAddress = new \App\Models\Address(['country_code' => 'ES']); 
         $carriers = $this->shippingCalculator->getAvailableCarriers($dummyAddress, $cart);
+        $regions = \App\Models\Region::all();
 
-        return view('shop.checkout.index', compact('cart', 'totals', 'user', 'addresses', 'carriers'));
+        return view('shop.checkout.index', compact('cart', 'totals', 'user', 'addresses', 'carriers', 'regions'));
     }
 
     public function process(Request $request)
@@ -56,7 +57,8 @@ class CheckoutController extends Controller
             'shipping_address.first_name' => 'required',
             'shipping_address.last_name' => 'required',
             'shipping_address.address_line_1' => 'required',
-            'shipping_address.city' => 'required',
+            'shipping_address.region_id' => 'required|exists:regiones,id',
+            'shipping_address.comuna_id' => 'required|exists:comunas,id',
             'shipping_address.country_code' => 'required',
             'shipping_address.phone' => 'required',
             'payment_method' => 'required',
@@ -70,9 +72,15 @@ class CheckoutController extends Controller
             $rules['billing_address.first_name'] = 'required';
             $rules['billing_address.last_name'] = 'required';
             $rules['billing_address.address_line_1'] = 'required';
-            $rules['billing_address.city'] = 'required';
+            $rules['billing_address.region_id'] = 'required|exists:regiones,id';
+            $rules['billing_address.comuna_id'] = 'required|exists:comunas,id';
             $rules['billing_address.country_code'] = 'required';
             $rules['billing_address.phone'] = 'required';
+            
+            $rules['billing_address.document_type'] = 'required|in:boleta,factura';
+            $rules['billing_address.rut'] = 'required|string|max:20';
+            $rules['billing_address.company'] = 'required_if:billing_address.document_type,factura|nullable|string|max:255';
+            $rules['billing_address.business_activity'] = 'required_if:billing_address.document_type,factura|nullable|string|max:255';
         }
 
         $request->validate($rules);
@@ -101,7 +109,11 @@ class CheckoutController extends Controller
 
         try {
             // We pass request data which includes email for guest
-            $order = $this->checkoutService->createOrder($user, $cart, $request->all());
+            $data = $request->all();
+            if (isset($data['billing_address']['document_type'])) {
+                $data['document_type'] = $data['billing_address']['document_type'];
+            }
+            $order = $this->checkoutService->createOrder($user, $cart, $data);
             
             // Process Payment
             $paymentDriver = $this->paymentManager->driver($request->payment_method);

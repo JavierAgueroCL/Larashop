@@ -21,18 +21,28 @@
  <p class="text-sm text-gray-600 ">
  Mostrando {{ $products->firstItem() ?? 0 }} - {{ $products->lastItem() ?? 0 }} de {{ $products->total() }} resultados
  </p>
+ <div class="flex items-center gap-4">
+ <div class="flex items-center">
+ <label for="per_page" class="mr-2 text-sm text-gray-600">{{ __('Mostrar:') }}</label>
+ <select id="per_page" onchange="window.location.href=this.value" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-md text-sm">
+ @foreach([12, 24, 36, 48] as $val)
+ <option value="{{ request()->fullUrlWithQuery(['per_page' => $val]) }}" {{ (request('per_page') == $val || (!request('per_page') && $val == 12)) ? 'selected' : '' }}>{{ $val }}</option>
+ @endforeach
+ </select>
+ </div>
+
  <div class="flex items-center">
  <label for="sort" class="mr-2 text-sm text-gray-600 ">{{ __('Ordenar por:') }}</label>
  <select id="sort" onchange="window.location.href=this.value" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-md text-sm">
  <option value="{{ request()->fullUrlWithQuery(['sort' => 'newest']) }}" {{ request('sort') == 'newest' ? 'selected' : '' }}>Más Recientes</option>
  <option value="{{ request()->fullUrlWithQuery(['sort' => 'price_asc']) }}" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Precio: Bajo a Alto</option>
  <option value="{{ request()->fullUrlWithQuery(['sort' => 'price_desc']) }}" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Precio: Alto a Bajo</option>
- </select>
+         </select>
+     </div>
  </div>
  </div>
-
- @if($products->isEmpty())
- <div class="bg-white p-8 rounded-lg shadow-md text-center">
+ 
+ @if($products->isEmpty()) <div class="bg-white p-8 rounded-lg shadow-md text-center">
  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 mx-auto text-gray-400 mb-4">
  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
  </svg>

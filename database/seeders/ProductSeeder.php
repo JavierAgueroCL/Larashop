@@ -90,6 +90,10 @@ class ProductSeeder extends Seeder
                     'base_price' => $item['price'],
                     'discount_price' => rand(0, 100) < 30 ? $item['price'] * 0.8 : null,
                     'tax_id' => $taxes->random()->id,
+                    'weight' => rand(100, 5000) / 100, // 1.00 to 50.00 kg
+                    'width' => rand(10, 100), // cm
+                    'height' => rand(10, 100), // cm
+                    'depth' => rand(10, 100), // cm
                     'stock_quantity' => rand(0, 100) < 10 ? 0 : rand(10, 100),
                     'is_active' => true,
                     'is_featured' => rand(0, 1) === 1,

@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('customer_last_name');
             $table->string('customer_phone')->nullable();
 
+            // Invoice Info
+            $table->enum('document_type', ['boleta', 'factura'])->default('boleta');
+
             $table->foreignId('billing_address_id')->nullable()->constrained('addresses')->nullOnDelete();
             $table->foreignId('shipping_address_id')->nullable()->constrained('addresses')->nullOnDelete();
 

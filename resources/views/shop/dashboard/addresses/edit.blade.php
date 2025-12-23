@@ -21,7 +21,42 @@
                                 {{ $address->address_type === 'billing' ? __('Actualizar Dirección de Facturación') : __('Actualizar Dirección de Envío') }}
                             </h3>
 
-                            <form action="{{ route('addresses.update', $address) }}" method="POST" x-data="{ type: '{{ old('address_type', $address->address_type) }}' }">
+                            <form action="{{ route('addresses.update', $address) }}" method="POST" 
+                                  x-data="{ 
+                                      type: '{{ old('address_type', $address->address_type) }}',
+                                      regions: {{ $regions->toJson() }},
+                                      selectedRegion: '{{ old('region_id', $address->region_id) }}',
+                                      selectedComuna: '{{ old('comuna_id', $address->comuna_id) }}',
+                                      document_type: '{{ old('document_type', $address->business_activity ? 'factura' : 'boleta') }}',
+                                      comunas: [],
+                                      
+                                      init() {
+                                          if(this.selectedRegion) {
+                                              this.fetchComunas(this.selectedRegion);
+                                          }
+                                          
+                                          this.$watch('selectedRegion', value => {
+                                              if(value) {
+                                                  this.fetchComunas(value).then(() => {
+                                                      if(value != '{{ old('region_id', $address->region_id) }}') {
+                                                          this.selectedComuna = '';
+                                                      }
+                                                  });
+                                              } else {
+                                                  this.comunas = [];
+                                                  this.selectedComuna = '';
+                                              }
+                                          });
+                                      },
+                                      
+                                      fetchComunas(regionId) {
+                                          return fetch(`/locations/regions/${regionId}/comunas`)
+                                              .then(res => res.json())
+                                              .then(data => {
+                                                  this.comunas = data;
+                                              });
+                                      }
+                                  }">
                                 @csrf
                                 @method('PUT')
 
@@ -34,6 +69,21 @@
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Alias de la Dirección') }} <span class="text-gray-500 text-xs">({{ __('ej., Casa, Trabajo') }})</span></label>
                                         <input type="text" name="alias" value="{{ old('alias', $address->alias) }}" placeholder="{{ __('Mi Casa') }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
                                         @error('alias') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    </div>
+
+                                    <!-- Document Type -->
+                                    <div class="col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Tipo de Documento') }}</label>
+                                        <div class="flex items-center gap-4">
+                                            <label class="flex items-center">
+                                                <input type="radio" name="document_type" value="boleta" x-model="document_type" class="text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                                <span class="ml-2 text-sm text-gray-700">{{ __('Boleta') }}</span>
+                                            </label>
+                                            <label class="flex items-center">
+                                                <input type="radio" name="document_type" value="factura" x-model="document_type" class="text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                                <span class="ml-2 text-sm text-gray-700">{{ __('Factura') }}</span>
+                                            </label>
+                                        </div>
                                     </div>
 
                                     <!-- Personal Info -->
@@ -49,9 +99,25 @@
                                         @error('last_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
 
+                                    <!-- RUT -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Empresa (Opcional)') }}</label>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('RUT') }}</label>
+                                        <input type="text" name="rut" value="{{ old('rut', $address->rut) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        @error('rut') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    </div>
+
+                                    <!-- Company (Conditional) -->
+                                    <div x-show="document_type === 'factura'">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Razón Social') }}</label>
                                         <input type="text" name="company" value="{{ old('company', $address->company) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        @error('company') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    </div>
+
+                                    <!-- Giro (Conditional) -->
+                                    <div class="col-span-2" x-show="document_type === 'factura'">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Giro') }}</label>
+                                        <input type="text" name="business_activity" value="{{ old('business_activity', $address->business_activity) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        @error('business_activity') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
 
                                     <div>
@@ -73,14 +139,25 @@
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Ciudad') }}</label>
-                                        <input type="text" name="city" value="{{ old('city', $address->city) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
-                                        @error('city') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Región') }}</label>
+                                        <select name="region_id" x-model="selectedRegion" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                            <option value="">{{ __('Seleccione una región') }}</option>
+                                            <template x-for="region in regions" :key="region.id">
+                                                <option :value="region.id" x-text="region.region" :selected="region.id == selectedRegion"></option>
+                                            </template>
+                                        </select>
+                                        @error('region_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Estado / Región') }}</label>
-                                        <input type="text" name="state_province" value="{{ old('state_province', $address->state_province) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Comuna') }}</label>
+                                        <select name="comuna_id" x-model="selectedComuna" :disabled="!comunas.length" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100">
+                                            <option value="">{{ __('Seleccione una comuna') }}</option>
+                                            <template x-for="comuna in comunas" :key="comuna.id">
+                                                <option :value="comuna.id" x-text="comuna.comuna" :selected="comuna.id == selectedComuna"></option>
+                                            </template>
+                                        </select>
+                                        @error('comuna_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
 
                                     <div>

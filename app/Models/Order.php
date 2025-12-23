@@ -19,6 +19,7 @@ class Order extends Model
         'customer_first_name',
         'customer_last_name',
         'customer_phone',
+        'document_type',
         'billing_address_id',
         'shipping_address_id',
         'subtotal',
