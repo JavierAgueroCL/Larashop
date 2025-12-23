@@ -61,7 +61,7 @@
  </div>
  </td>
  <td class="px-6 py-4 whitespace-nowrap">
- <div class="text-sm text-gray-900 ">{{ number_format($item->unit_price, 0, ',', '.') }} $</div>
+ <div class="text-sm text-gray-900 ">$ {{ number_format($item->unit_price, 0, ',', '.') }}</div>
  </td>
  <td class="px-6 py-4 whitespace-nowrap">
  <form action="{{ route('cart.update', $item->id) }}" method="POST" class="flex items-center">
@@ -72,7 +72,7 @@
  </form>
  </td>
  <td class="px-6 py-4 whitespace-nowrap">
- <div class="text-sm text-gray-900 ">{{ number_format($item->total, 0, ',', '.') }} $</div>
+ <div class="text-sm text-gray-900 ">$ {{ number_format($item->total, 0, ',', '.') }}</div>
  </td>
  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
  <form action="{{ route('cart.remove', $item->id) }}" method="POST">
@@ -104,21 +104,21 @@
  <div class="space-y-3">
  <div class="flex justify-between items-center text-sm text-gray-600 ">
  <span>{{ __('Subtotal') }}</span>
- <span>{{ number_format($totals['subtotal'], 0, ',', '.') }} $</span>
+ <span>$ {{ number_format($totals['subtotal'], 0, ',', '.') }}</span>
  </div>
  <div class="flex justify-between items-center text-sm text-gray-600 ">
  <span>{{ __('Impuestos') }}</span>
- <span>{{ number_format($totals['tax'], 0, ',', '.') }} $</span>
+ <span>$ {{ number_format($totals['tax'], 0, ',', '.') }}</span>
  </div>
  @if($totals['discount'] > 0)
  <div class="flex justify-between items-center text-sm text-green-600 font-medium">
  <span>{{ __('Descuento') }}</span>
- <span>-{{ number_format($totals['discount'], 0, ',', '.') }} $</span>
+ <span>-$ {{ number_format($totals['discount'], 0, ',', '.') }}</span>
  </div>
  @endif
  <div class="flex justify-between items-center border-t border-gray-200 pt-4">
  <span class="text-lg font-bold text-gray-900 ">{{ __('Total') }}</span>
- <span class="text-lg font-bold text-indigo-600">{{ number_format($totals['total'], 0, ',', '.') }} $</span>
+ <span class="text-lg font-bold text-indigo-600">$ {{ number_format($totals['total'], 0, ',', '.') }}</span>
  </div>
  </div>
  <div class="mt-6">

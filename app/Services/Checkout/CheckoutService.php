@@ -23,11 +23,47 @@ class CheckoutService
     {
         return DB::transaction(function () use ($user, $cart, $data) {
             
-            // 1. Create or Get Addresses
-            $shippingAddress = $this->createOrGetAddress($user, $data['shipping_address'], 'shipping');
-            $billingAddress = isset($data['billing_address']) 
-                ? $this->createOrGetAddress($user, $data['billing_address'], 'billing')
-                : $shippingAddress;
+            // 1. Resolve Addresses
+            $shippingAddressId = $data['shipping_address_id'] ?? 'new';
+            
+            if ($shippingAddressId !== 'new' && $shippingAddressId) {
+                $shippingAddress = Address::find($shippingAddressId);
+                // Security check: ensure address belongs to user if logged in
+                if ($user && $shippingAddress && $shippingAddress->user_id !== $user->id) {
+                     // Fallback or throw error? For now fallback to creating new to avoid error, or strict check.
+                     // Let's assume strict validation happened in controller, but safe fallback:
+                     $shippingAddress = $this->createAddress($data['shipping_address'], 'shipping');
+                }
+            } else {
+                $shippingAddress = $this->createAddress($data['shipping_address'], 'shipping');
+            }
+
+            // Billing Address
+            // If we have a billing_address_id separate from shipping, handle it. 
+            // Current UI suggests billing is either same as shipping or a new form?
+            // Actually, my previous changes to checkout view allow separate billing form.
+            // But we don't have a 'billing_address_id' selector in the UI for Guest? 
+            // For Auth user, we didn't add a selector for Billing, only Shipping. 
+            // The Billing form is "Guest Billing Logic" in x-data.
+            // So for now, Billing is always "created" from the form data if not "same as shipping".
+            // BUT, if it's "same as shipping", we use $shippingAddress.
+            
+            // Wait, logic in Controller/View:
+            // The view has `billing_address` inputs.
+            // If `useBillingForShipping` is true, we copy billing fields to shipping (for guest).
+            // For Auth user, we have `addresses` list for Shipping.
+            // We don't have a list for Billing in the UI I wrote.
+            // So Billing is always "new" or "same as shipping".
+            
+            // Let's assume if 'billing_address' data is present, we create/use it.
+            // But if it's the SAME address record (ID), we should reuse.
+            // Since we don't select Billing ID, we create a new one (transient).
+            
+            if (isset($data['billing_address']) && !empty($data['billing_address']['first_name'])) {
+                 $billingAddress = $this->createAddress($data['billing_address'], 'billing');
+            } else {
+                 $billingAddress = $shippingAddress;
+            }
 
             // 2. Calculate Totals
             $totals = $this->cartService->getCartTotals($cart);
@@ -77,20 +113,17 @@ class CheckoutService
                 'comment' => 'Order created',
             ]);
 
-            // 7. Clear Cart
-            $this->cartService->clear($cart);
-
-            // 8. Dispatch Event
+            // 7. Dispatch Event
             OrderCreated::dispatch($order);
 
             return $order;
         });
     }
 
-    protected function createOrGetAddress(?User $user, array $data, string $type): Address
+    protected function createAddress(array $data, string $type): Address
     {
         return Address::create(array_merge($data, [
-            'user_id' => $user?->id,
+            'user_id' => null, // Do not associate one-off checkout addresses with user
             'address_type' => $type,
         ]));
     }

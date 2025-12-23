@@ -25,18 +25,25 @@
                                  @csrf
                                  <div class="grid grid-cols-1 gap-6">
                                      <div>
+                                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Nombre') }}</label>
+                                         <input type="text" name="name" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                     </div>
+                                     <div>
+                                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Correo electrónico') }}</label>
+                                         <input type="email" name="email" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                     </div>
+                                     <div>
                                          <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Asunto') }}</label>
                                          <select name="subject" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                             <option>{{ __('Consulta General') }}</option>
-                                             <option>{{ __('Soporte de Pedidos') }}</option>
-                                             <option>{{ __('Consulta de Negocios') }}</option>
-                                             <option>{{ __('Otro') }}</option>
+                                             <option>{{ __('Consulta') }}</option>
+                                             <option>{{ __('Soporte') }}</option>
+                                             <option>{{ __('Feedback') }}</option>
                                          </select>
                                      </div>
                                      
                                      <div>
                                          <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Mensaje') }}</label>
-                                         <textarea name="message" rows="5" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="{{ __('¿En qué podemos ayudarle?') }}"></textarea>
+                                         <textarea name="message" rows="5" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="{{ __('¿En qué podemos ayudarle?') }}" required></textarea>
                                      </div>
  
                                      <div>

@@ -22,7 +22,7 @@
  </div>
  
  <a href="{{ route('products.show', $product->slug) }}" class="block w-full text-center bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 font-medium transition duration-150">
- {{ __('View Full Details') }}
+ {{ __('Ver Detalles Completos') }}
  </a>
  </div>
  </div>

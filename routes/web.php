@@ -82,6 +82,9 @@ Route::middleware('auth')->group(function () {
         return back()->with('success', 'Your message has been sent successfully! We will contact you soon.');
     })->name('dashboard.help.submit');
 
+    // Orders
+    Route::get('/dashboard/orders/{order}', [App\Http\Controllers\Shop\OrderController::class, 'show'])->name('orders.show');
+
     // Security
     Route::get('/dashboard/security', [App\Http\Controllers\Shop\Dashboard\SecurityController::class, 'index'])->name('dashboard.security');
     Route::delete('/dashboard/security/sessions', [App\Http\Controllers\Shop\Dashboard\SecurityController::class, 'destroyOtherSessions'])->name('dashboard.security.logout-others');

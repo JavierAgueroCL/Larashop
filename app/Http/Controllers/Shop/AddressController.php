@@ -54,7 +54,7 @@ class AddressController extends Controller
             'comuna_id' => 'required|exists:comunas,id',
             'country_code' => 'required|string|max:2',
             'phone' => 'required|string|max:20',
-            'rut' => 'required|string|max:20',
+            'rut' => 'required_if:address_type,billing|nullable|string|max:20',
             'document_type' => 'nullable|in:boleta,factura', // Virtual field for validation logic
             'company' => 'required_if:document_type,factura|nullable|string|max:255',
             'business_activity' => 'required_if:document_type,factura|nullable|string|max:255',
@@ -73,7 +73,7 @@ class AddressController extends Controller
             $existingBilling = Auth::user()->addresses()->where('address_type', 'billing')->first();
             if ($existingBilling) {
                 $existingBilling->update($validated);
-                return redirect()->route('addresses.billing')->with('success', 'Billing address updated successfully.');
+                return redirect()->route('addresses.billing')->with('success', 'Dirección de facturación actualizada con éxito.');
             }
         }
 
@@ -87,10 +87,10 @@ class AddressController extends Controller
         Address::create($validated);
 
         if ($validated['address_type'] === 'billing') {
-            return redirect()->route('addresses.billing')->with('success', 'Billing address saved successfully.');
+            return redirect()->route('addresses.billing')->with('success', 'Dirección de facturación guardada con éxito.');
         }
 
-        return redirect()->route('addresses.shipping')->with('success', 'Address created successfully.');
+        return redirect()->route('addresses.shipping')->with('success', 'Dirección creada con éxito.');
     }
 
     /**
@@ -126,7 +126,7 @@ class AddressController extends Controller
             'comuna_id' => 'required|exists:comunas,id',
             'country_code' => 'required|string|max:2',
             'phone' => 'required|string|max:20',
-            'rut' => 'required|string|max:20',
+            'rut' => 'required_if:address_type,billing|nullable|string|max:20',
             'document_type' => 'nullable|in:boleta,factura',
             'company' => 'required_if:document_type,factura|nullable|string|max:255',
             'business_activity' => 'required_if:document_type,factura|nullable|string|max:255',
@@ -144,10 +144,10 @@ class AddressController extends Controller
         $address->update($validated);
 
         if ($validated['address_type'] === 'billing') {
-            return redirect()->route('addresses.billing')->with('success', 'Billing address updated successfully.');
+            return redirect()->route('addresses.billing')->with('success', 'Dirección de facturación actualizada con éxito.');
         }
 
-        return redirect()->route('addresses.shipping')->with('success', 'Address updated successfully.');
+        return redirect()->route('addresses.shipping')->with('success', 'Dirección actualizada con éxito.');
     }
 
     /**
@@ -163,9 +163,9 @@ class AddressController extends Controller
         $address->delete();
 
         if ($type === 'billing') {
-            return redirect()->route('addresses.billing')->with('success', 'Billing address deleted.');
+            return redirect()->route('addresses.billing')->with('success', 'Dirección de facturación eliminada.');
         }
 
-        return redirect()->route('addresses.shipping')->with('success', 'Address deleted successfully.');
+        return redirect()->route('addresses.shipping')->with('success', 'Dirección eliminada con éxito.');
     }
 }

@@ -35,7 +35,11 @@
                                         <tbody class="bg-white divide-y divide-gray-200">
                                             @foreach($orders as $order)
                                                 <tr>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{{ $order->order_number }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                                                        <a href="{{ route('orders.show', $order) }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                                            {{ $order->order_number }}
+                                                        </a>
+                                                    </td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $order->created_at->format('d/m/Y') }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">$ {{ number_format($order->grand_total, 0, ',', '.') }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm">

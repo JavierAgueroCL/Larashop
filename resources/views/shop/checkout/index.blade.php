@@ -417,7 +417,7 @@
                                                 <span class="block font-medium text-gray-900">{{ $carrier->display_name }}</span>
                                                 <span class="block text-sm text-gray-500">{{ $carrier->delay }}</span>
                                             </div>
-                                            <span class="font-bold text-gray-900">{{ number_format($carrier->calculated_cost, 0, ',', '.') }} $</span>
+                                            <span class="font-bold text-gray-900">$ {{ number_format($carrier->calculated_cost, 0, ',', '.') }}</span>
                                         </div>
                                     </label>
                                 @endforeach
@@ -462,7 +462,7 @@
                                         <div class="flex items-center">
                                             <div class="text-sm font-medium text-gray-900">{{ $item->quantity }}x {{ $item->product->name }}</div>
                                         </div>
-                                        <div class="text-sm text-gray-600">{{ number_format($item->total, 0, ',', '.') }} $</div>
+                                        <div class="text-sm text-gray-600">$ {{ number_format($item->total, 0, ',', '.') }}</div>
                                     </div>
                                 @endforeach
                             </div>
@@ -470,25 +470,25 @@
                             <div class="border-t border-gray-200 pt-4 space-y-3">
                                 <div class="flex justify-between text-sm text-gray-700">
                                     <span>{{ __('Subtotal') }}</span>
-                                    <span x-text="subtotal.toFixed(0) + ' $'">{{ number_format($totals['subtotal'], 0, ',', '.') }} $</span>
+                                    <span x-text="'$ ' + subtotal.toFixed(0)">$ {{ number_format($totals['subtotal'], 0, ',', '.') }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm text-gray-700">
                                     <span>{{ __('Impuestos') }}</span>
-                                    <span x-text="tax.toFixed(0) + ' $'">{{ number_format($totals['tax'], 0, ',', '.') }} $</span>
+                                    <span x-text="'$ ' + tax.toFixed(0)">$ {{ number_format($totals['tax'], 0, ',', '.') }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm text-gray-700">
                                     <span>{{ __('Envío') }}</span>
-                                    <span x-text="shippingCost.toFixed(0) + ' $'">0 $</span>
+                                    <span x-text="'$ ' + shippingCost.toFixed(0)">$ 0</span>
                                 </div>
                                 @if($totals['discount'] > 0)
                                     <div class="flex justify-between text-sm text-green-600">
                                         <span>{{ __('Descuento') }}</span>
-                                        <span>-{{ number_format($totals['discount'], 0, ',', '.') }} $</span>
+                                        <span>-$ {{ number_format($totals['discount'], 0, ',', '.') }}</span>
                                     </div>
                                 @endif
                                 <div class="flex justify-between text-lg font-bold text-gray-900">
                                     <span>{{ __('Total') }}</span>
-                                    <span x-text="total + ' $'">{{ number_format($totals['total'], 0, ',', '.') }} $</span>
+                                    <span x-text="'$ ' + total">$ {{ number_format($totals['total'], 0, ',', '.') }}</span>
                                 </div>
                             </div>
 

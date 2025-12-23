@@ -11,7 +11,7 @@
                         <ul class="space-y-2">
                             @foreach($categories as $category)
                                 <li>
-                                    <a href="#" class="text-gray-600 hover:text-primary-600">{{ $category->name }}</a>
+                                    <a href="{{ route('blog.index', ['category' => $category->slug]) }}" class="text-gray-600 hover:text-primary-600">{{ $category->name }}</a>
                                 </li>
                             @endforeach
                         </ul>

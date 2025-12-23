@@ -53,16 +53,22 @@ class CheckoutController extends Controller
     {
         // Validation
         $rules = [
-            'shipping_address.alias' => 'nullable|string|max:255',
-            'shipping_address.first_name' => 'required',
-            'shipping_address.last_name' => 'required',
-            'shipping_address.address_line_1' => 'required',
-            'shipping_address.region_id' => 'required|exists:regiones,id',
-            'shipping_address.comuna_id' => 'required|exists:comunas,id',
-            'shipping_address.country_code' => 'required',
-            'shipping_address.phone' => 'required',
             'payment_method' => 'required',
         ];
+
+        // Only validate shipping address fields if creating a new one
+        if ($request->input('shipping_address_id') === 'new') {
+            $rules = array_merge($rules, [
+                'shipping_address.alias' => 'nullable|string|max:255',
+                'shipping_address.first_name' => 'required',
+                'shipping_address.last_name' => 'required',
+                'shipping_address.address_line_1' => 'required',
+                'shipping_address.region_id' => 'required|exists:regiones,id',
+                'shipping_address.comuna_id' => 'required|exists:comunas,id',
+                'shipping_address.country_code' => 'required',
+                'shipping_address.phone' => 'required',
+            ]);
+        }
 
         if (!Auth::check()) {
             $rules['email'] = 'required|email';
@@ -127,6 +133,9 @@ class CheckoutController extends Controller
             if ($redirectUrl) {
                 return redirect($redirectUrl);
             }
+            
+            // For manual methods (bank transfer), clear cart now
+            $this->cartService->clear($cart);
             
             return redirect()->route('checkout.success', $order);
 

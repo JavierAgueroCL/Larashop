@@ -6,39 +6,43 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Log;
 use Transbank\Webpay\WebpayPlus;
 use Transbank\Webpay\WebpayPlus\Transaction;
+use Transbank\Webpay\Options;
 
 class TransbankPaymentService implements PaymentServiceInterface
 {
     protected ?string $redirectUrl = null;
+    protected Transaction $transaction;
 
     public function __construct()
     {
         $environment = config('services.transbank.environment', 'integration');
         
         if ($environment === 'production') {
-            WebpayPlus::configureForProduction(
+            $this->transaction = new Transaction(new Options(
+                config('services.transbank.api_key'),
                 config('services.transbank.commerce_code'),
-                config('services.transbank.api_key')
-            );
+                Options::ENVIRONMENT_PRODUCTION
+            ));
         } else {
-            WebpayPlus::configureForIntegration(
-                WebpayPlus::DEFAULT_COMMERCE_CODE,
-                WebpayPlus::DEFAULT_API_KEY
-            );
+            $this->transaction = new Transaction(new Options(
+                WebpayPlus::INTEGRATION_API_KEY,
+                WebpayPlus::INTEGRATION_COMMERCE_CODE,
+                Options::ENVIRONMENT_INTEGRATION
+            ));
         }
     }
 
     public function process(Order $order, array $data): bool
     {
         try {
-            $transaction = new Transaction();
             $buyOrder = $order->order_number; // Using order_number which is unique string
             $sessionId = session()->getId();
             $amount = (int) $order->grand_total; // Webpay standard is Integer (CLP)
 
             $returnUrl = route('payment.transbank.callback');
 
-            $response = $transaction->create($buyOrder, $sessionId, $amount, $returnUrl);
+            // Use the instance created in constructor
+            $response = $this->transaction->create($buyOrder, $sessionId, $amount, $returnUrl);
 
             // Webpay Plus Redirect: URL + token_ws (GET)
             $this->redirectUrl = $response->getUrl() . '?token_ws=' . $response->getToken();

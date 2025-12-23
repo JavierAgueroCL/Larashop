@@ -71,8 +71,8 @@
                                         @error('alias') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
 
-                                    <!-- Document Type -->
-                                    <div class="col-span-2">
+                                     <!-- Document Type -->
+                                     <div class="col-span-2" x-show="type !== 'shipping'">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Tipo de Documento') }}</label>
                                         <div class="flex items-center gap-4">
                                             <label class="flex items-center">
@@ -84,8 +84,7 @@
                                                 <span class="ml-2 text-sm text-gray-700">{{ __('Factura') }}</span>
                                             </label>
                                         </div>
-                                    </div>
-
+                                     </div>
                                     <!-- Personal Info -->
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Nombre') }}</label>
@@ -99,27 +98,24 @@
                                         @error('last_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
 
-                                    <!-- RUT -->
-                                    <div>
+                                     <!-- RUT -->
+                                     <div x-show="type !== 'shipping'">
                                         <label class="block text-sm font-medium text-gray-700">{{ __('RUT') }}</label>
                                         <input type="text" name="rut" value="{{ old('rut', $address->rut) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
                                         @error('rut') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                                    </div>
-
-                                    <!-- Company (Conditional) -->
-                                    <div x-show="document_type === 'factura'">
+                                     </div>
+                                     <!-- Company (Conditional) -->
+                                     <div x-show="type !== 'shipping' && document_type === 'factura'">
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Razón Social') }}</label>
                                         <input type="text" name="company" value="{{ old('company', $address->company) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
                                         @error('company') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                                    </div>
-
-                                    <!-- Giro (Conditional) -->
-                                    <div class="col-span-2" x-show="document_type === 'factura'">
+                                     </div>
+                                     <!-- Giro (Conditional) -->
+                                     <div class="col-span-2" x-show="type !== 'shipping' && document_type === 'factura'">
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Giro') }}</label>
                                         <input type="text" name="business_activity" value="{{ old('business_activity', $address->business_activity) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
                                         @error('business_activity') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                                    </div>
-
+                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
                                         <input type="text" name="phone" value="{{ old('phone', $address->phone) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">

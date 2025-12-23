@@ -13,7 +13,7 @@
                                 <h3>
                                     <a href="{{ route('products.show', $item->product->slug) }}">{{ $item->product->name }}</a>
                                 </h3>
-                                <p class="ml-4">{{ number_format($item->price_snapshot, 0, ',', '.') }} $</p>
+                                <p class="ml-4">$ {{ number_format($item->price_snapshot, 0, ',', '.') }}</p>
                             </div>
                             @if($item->combination)
                                 <p class="mt-1 text-sm text-gray-500">{{ $item->combination->name }}</p>
@@ -61,7 +61,7 @@
     <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
         <div class="flex justify-between text-base font-medium text-gray-900">
             <p>{{ __('Subtotal') }}</p>
-            <p>{{ number_format($totals['subtotal'], 0, ',', '.') }} $</p>
+            <p>$ {{ number_format($totals['subtotal'], 0, ',', '.') }}</p>
         </div>
         <p class="mt-0.5 text-sm text-gray-500">{{ __('Envío e impuestos calculados al finalizar la compra.') }}</p>
         <div class="mt-6">

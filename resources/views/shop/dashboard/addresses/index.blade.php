@@ -64,7 +64,7 @@
  @if($address->address_line_2)
  <p class="text-sm text-gray-600 ">{{ $address->address_line_2 }}</p>
  @endif
- <p class="text-sm text-gray-600 ">{{ $address->city }}, {{ $address->state_province }}</p>
+ <p class="text-sm text-gray-600 ">{{ $address->comuna->comuna ?? '' }}, {{ $address->region->region ?? '' }}</p>
  <p class="text-sm text-gray-600 ">{{ $address->country_code }}</p>
  <p class="text-sm text-gray-600 mt-2 font-medium">{{ $address->phone }}</p>
  </div>
