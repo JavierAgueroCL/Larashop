@@ -13,10 +13,10 @@
  <!-- Navigation Links -->
  <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
  <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
- {{ __('Home') }}
+ {{ __('Inicio') }}
  </x-nav-link>
  <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
- {{ __('All Products') }}
+ {{ __('Todos los Productos') }}
  </x-nav-link>
  
  <!-- Dynamic Categories -->
@@ -46,7 +46,7 @@
 
  <x-slot name="content">
  <x-dropdown-link :href="route('profile.edit')">
- {{ __('Profile') }}
+ {{ __('Perfil') }}
  </x-dropdown-link>
 
  <!-- Authentication -->
@@ -56,14 +56,14 @@
  <x-dropdown-link :href="route('logout')"
  onclick="event.preventDefault();
  this.closest('form').submit();">
- {{ __('Log Out') }}
+ {{ __('Cerrar Sesión') }}
  </x-dropdown-link>
  </form>
  </x-slot>
  </x-dropdown>
  @else
- <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
- <a href="{{ route('register') }}" class="ms-4 font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
+ <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Iniciar Sesión</a>
+ <a href="{{ route('register') }}" class="ms-4 font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Registrarse</a>
  @endauth
  </div>
 
@@ -83,7 +83,7 @@
  <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
  <div class="pt-2 pb-3 space-y-1">
  <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
- {{ __('Dashboard') }}
+ {{ __('Panel de Control') }}
  </x-responsive-nav-link>
  </div>
 
@@ -97,7 +97,7 @@
 
  <div class="mt-3 space-y-1">
  <x-responsive-nav-link :href="route('profile.edit')">
- {{ __('Profile') }}
+ {{ __('Perfil') }}
  </x-responsive-nav-link>
 
  <!-- Authentication -->
@@ -107,17 +107,17 @@
  <x-responsive-nav-link :href="route('logout')"
  onclick="event.preventDefault();
  this.closest('form').submit();">
- {{ __('Log Out') }}
+ {{ __('Cerrar Sesión') }}
  </x-responsive-nav-link>
  </form>
  </div>
  @else
  <div class="mt-3 space-y-1">
  <x-responsive-nav-link :href="route('login')">
- {{ __('Log in') }}
+ {{ __('Iniciar Sesión') }}
  </x-responsive-nav-link>
  <x-responsive-nav-link :href="route('register')">
- {{ __('Register') }}
+ {{ __('Registrarse') }}
  </x-responsive-nav-link>
  </div>
  @endauth

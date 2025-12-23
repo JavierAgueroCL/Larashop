@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Panel de Control') }}
         </h2>
     </x-slot>
 
@@ -17,19 +17,19 @@
                 <div class="w-full md:w-3/4">
                     <div class="bg-white overflow-hidden shadow-md sm:rounded-lg border border-gray-300">
                         <div class="p-6 text-gray-900">
-                            <h3 class="text-lg font-bold mb-4 text-gray-800">{{ __("Your Orders") }}</h3>
+                            <h3 class="text-lg font-bold mb-4 text-gray-800">{{ __("Tus Pedidos") }}</h3>
                             
                             @if($orders->isEmpty())
-                                <p class="text-gray-600">{{ __("You haven't placed any orders yet.") }}</p>
+                                <p class="text-gray-600">{{ __("Aún no has realizado ningún pedido.") }}</p>
                             @else
                                 <div class="overflow-x-auto">
                                     <table class="min-w-full divide-y divide-gray-200 border border-gray-200">
                                         <thead class="bg-gray-50">
                                             <tr>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __("Order #") }}</th>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __("Date") }}</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __("Pedido #") }}</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __("Fecha") }}</th>
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __("Total") }}</th>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __("Status") }}</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __("Estado") }}</th>
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white divide-y divide-gray-200">
@@ -37,7 +37,7 @@
                                                 <tr>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{{ $order->order_number }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $order->created_at->format('d/m/Y') }}</td>
-                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">{{ number_format($order->grand_total, 2) }} €</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">$ {{ number_format($order->grand_total, 0, ',', '.') }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200">
                                                             {{ strtoupper($order->current_status) }}

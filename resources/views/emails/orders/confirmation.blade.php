@@ -9,12 +9,12 @@
 | {{ __('Product') }} | {{ __('Qty') }} | {{ __('Price') }} |
 | :--- | :---: | :---: |
 @foreach($order->items as $item)
-| {{ $item->product_name }} | {{ $item->quantity }} | {{ number_format($item->unit_price, 2) }} € |
+| {{ $item->product_name }} | {{ $item->quantity }} | {{ number_format($item->unit_price, 0, ',', '.') }} $ |
 @endforeach
 </x-mail::table>
 
 <x-mail::panel>
-**{{ __('Total') }}: {{ number_format($order->grand_total, 2) }} €**
+**{{ __('Total') }}: {{ number_format($order->grand_total, 0, ',', '.') }} $**
 </x-mail::panel>
 
 <x-mail::button :url="route('dashboard')">

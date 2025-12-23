@@ -12,8 +12,8 @@ class BlogCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        BlogCategory::create(['name' => 'Technology', 'slug' => 'technology']);
-        BlogCategory::create(['name' => 'Fashion', 'slug' => 'fashion']);
-        BlogCategory::create(['name' => 'Lifestyle', 'slug' => 'lifestyle']);
+        BlogCategory::create(['name' => 'Tecnología', 'slug' => 'tecnologia']);
+        BlogCategory::create(['name' => 'Moda', 'slug' => 'moda']);
+        BlogCategory::create(['name' => 'Estilo de Vida', 'slug' => 'estilo-de-vida']);
     }
 }

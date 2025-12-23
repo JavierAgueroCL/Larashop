@@ -3,8 +3,8 @@
 return [
     'name' => env('SHOP_NAME', 'LaraShop'),
     'email' => env('SHOP_EMAIL', 'info@larashop.com'),
-    'currency' => env('SHOP_CURRENCY', 'EUR'),
-    'locale' => env('SHOP_LOCALE', 'es'),
+    'currency' => 'CLP',
+    'locale' => 'es',
     'tax_included' => env('SHOP_TAX_INCLUDED', true),
     'guest_checkout' => env('SHOP_GUEST_CHECKOUT', true),
     'low_stock_threshold' => env('SHOP_LOW_STOCK_THRESHOLD', 5),

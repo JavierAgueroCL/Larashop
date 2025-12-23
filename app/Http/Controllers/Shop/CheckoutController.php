@@ -57,7 +57,6 @@ class CheckoutController extends Controller
             'shipping_address.last_name' => 'required',
             'shipping_address.address_line_1' => 'required',
             'shipping_address.city' => 'required',
-            'shipping_address.postal_code' => 'required',
             'shipping_address.country_code' => 'required',
             'shipping_address.phone' => 'required',
             'payment_method' => 'required',
@@ -67,6 +66,13 @@ class CheckoutController extends Controller
             $rules['email'] = 'required|email';
             $rules['create_account'] = 'nullable|boolean';
             $rules['password'] = 'required_if:create_account,1|confirmed';
+            
+            $rules['billing_address.first_name'] = 'required';
+            $rules['billing_address.last_name'] = 'required';
+            $rules['billing_address.address_line_1'] = 'required';
+            $rules['billing_address.city'] = 'required';
+            $rules['billing_address.country_code'] = 'required';
+            $rules['billing_address.phone'] = 'required';
         }
 
         $request->validate($rules);

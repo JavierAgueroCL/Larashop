@@ -6,7 +6,7 @@
  <div class="relative group">
  <button class="flex items-center text-white bg-primary-500 px-4 h-12 font-semibold uppercase text-sm tracking-wide">
  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
- Browse Categories
+ Explorar Categorías
  </button>
  <!-- Dropdown (Simplified) -->
  <div class="absolute left-0 top-full w-56 bg-white shadow-lg border border-gray-300 hidden group-hover:block z-50">

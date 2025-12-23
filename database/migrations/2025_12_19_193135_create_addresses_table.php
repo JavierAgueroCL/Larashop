@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('address_line_2')->nullable();
             $table->string('city');
             $table->string('state_province');
-            $table->string('postal_code');
             $table->string('country_code', 2);
             $table->string('phone');
             $table->boolean('is_default')->default(false);

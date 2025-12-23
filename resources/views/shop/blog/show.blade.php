@@ -7,11 +7,11 @@
                 @endif
                 <div class="p-8">
                     <div class="flex items-center text-sm text-gray-500 mb-4">
-                        <span>{{ $post->published_at->format('M d, Y') }}</span>
+                        <span>{{ $post->published_at->format('d M, Y') }}</span>
                         <span class="mx-2">•</span>
                         <span class="text-primary-600">{{ $post->category->name }}</span>
                         <span class="mx-2">•</span>
-                        <span>By {{ $post->user ? $post->user->name : 'Admin' }}</span>
+                        <span>{{ __('Por') }} {{ $post->user ? $post->user->name : 'Admin' }}</span>
                     </div>
                     
                     <h1 class="text-3xl font-bold text-gray-900 mb-6">{{ $post->title }}</h1>
@@ -23,7 +23,7 @@
             </article>
 
             <div class="mt-8">
-                <a href="{{ route('blog.index') }}" class="text-primary-600 font-semibold hover:underline">&larr; Back to Blog</a>
+                <a href="{{ route('blog.index') }}" class="text-primary-600 font-semibold hover:underline">&larr; {{ __('Volver al Blog') }}</a>
             </div>
         </div>
     </div>

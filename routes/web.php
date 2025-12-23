@@ -39,8 +39,6 @@ Route::get('/pages/blog', [App\Http\Controllers\Shop\BlogController::class, 'ind
 Route::get('/pages/blog/{slug}', [App\Http\Controllers\Shop\BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
-Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
-Route::get('/currency/{code}', [App\Http\Controllers\Shop\CurrencyController::class, 'switch'])->name('currency.switch');
 Route::get('/sitemap.xml', [App\Http\Controllers\Shop\SitemapController::class, 'index'])->name('sitemap');
 
 // Newsletter
@@ -79,6 +77,10 @@ Route::middleware('auth')->group(function () {
         
         return back()->with('success', 'Your message has been sent successfully! We will contact you soon.');
     })->name('dashboard.help.submit');
+
+    // Security
+    Route::get('/dashboard/security', [App\Http\Controllers\Shop\Dashboard\SecurityController::class, 'index'])->name('dashboard.security');
+    Route::delete('/dashboard/security/sessions', [App\Http\Controllers\Shop\Dashboard\SecurityController::class, 'destroyOtherSessions'])->name('dashboard.security.logout-others');
 
     // Addresses
     Route::get('/dashboard/addresses/shipping', [\App\Http\Controllers\Shop\AddressController::class, 'shippingIndex'])->name('addresses.shipping');

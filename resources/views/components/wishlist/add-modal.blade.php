@@ -57,8 +57,8 @@
             if(!data) return;
             Swal.fire({
                 icon: 'success',
-                title: 'Success',
-                text: data.message,
+                title: '{{ __('Éxito') }}',
+                text: data.message, // Assuming backend sends localized message or we handle it there
                 showConfirmButton: false,
                 timer: 1500,
                 toast: true,
@@ -70,8 +70,8 @@
             console.error(e);
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Error adding to wishlist'
+                title: '{{ __('Ups...') }}',
+                text: '{{ __('Error al añadir a la lista de deseos') }}'
             });
         });
     },
@@ -117,7 +117,7 @@ x-cloak>
         
         <!-- Header -->
         <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-base font-medium text-gray-900">{{ __('Add to Wishlist') }}</h3>
+            <h3 class="text-base font-medium text-gray-900">{{ __('Añadir a la Lista de Deseos') }}</h3>
             <button @click="open = false" class="text-gray-400 hover:text-gray-500">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
@@ -133,7 +133,7 @@ x-cloak>
             </div>
 
             <div x-show="!loading">
-                <p class="text-xs text-gray-500 mb-3">{{ __('Select a wishlist:') }}</p>
+                <p class="text-xs text-gray-500 mb-3">{{ __('Selecciona una lista:') }}</p>
                 
                 <!-- List Selection -->
                 <div class="space-y-2 mb-4 max-h-48 overflow-y-auto">
@@ -141,7 +141,7 @@ x-cloak>
                         <label class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200">
                             <input type="radio" name="wishlist" :value="list.id" x-model="selectedListId" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300">
                             <span class="text-sm text-gray-900 truncate" x-text="list.name"></span>
-                            <span x-show="list.is_default" class="text-xs text-gray-400 ml-1">({{ __('Default') }})</span>
+                            <span x-show="list.is_default" class="text-xs text-gray-400 ml-1">({{ __('Predeterminada') }})</span>
                         </label>
                     </template>
                 </div>
@@ -151,13 +151,13 @@ x-cloak>
                     <div x-data="{ showNew: false }">
                         <button @click="showNew = !showNew" type="button" class="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center">
                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            {{ __('Create new wishlist') }}
+                            {{ __('Crear nueva lista') }}
                         </button>
                         
                         <div x-show="showNew" class="mt-2 flex flex-col gap-2">
-                            <input type="text" x-model="newListName" placeholder="Name" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-xs">
+                            <input type="text" x-model="newListName" placeholder="{{ __('Nombre') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-xs">
                             <button @click="createAndAdd" type="button" class="w-full px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-xs font-medium">
-                                {{ __('Create') }}
+                                {{ __('Crear') }}
                             </button>
                         </div>
                     </div>
@@ -168,10 +168,10 @@ x-cloak>
         <!-- Footer -->
         <div class="bg-gray-50 px-4 py-3 border-t border-gray-200 flex flex-col gap-2">
             <button @click="addToSelected" :disabled="!selectedListId" class="w-full px-4 py-2 bg-primary-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-primary-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
-                {{ __('Accept') }}
+                {{ __('Aceptar') }}
             </button>
             <button @click="open = false" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
-                {{ __('Cancel') }}
+                {{ __('Cancelar') }}
             </button>
         </div>
     </div>

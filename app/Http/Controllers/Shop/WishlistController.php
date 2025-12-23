@@ -37,7 +37,7 @@ class WishlistController extends Controller
             'is_default' => false, // Default is usually created on registration or first add
         ]);
 
-        return back()->with('success', 'Wishlist created successfully.');
+        return back()->with('success', 'Lista de deseos creada con éxito.');
     }
 
     /**
@@ -73,7 +73,7 @@ class WishlistController extends Controller
             'is_public' => $request->has('is_public'),
         ]);
 
-        return back()->with('success', 'Wishlist updated successfully.');
+        return back()->with('success', 'Lista de deseos actualizada con éxito.');
     }
 
     /**
@@ -86,12 +86,12 @@ class WishlistController extends Controller
         }
 
         if ($wishlist->is_default) {
-            return back()->with('error', 'You cannot delete your default wishlist.');
+            return back()->with('error', 'No puedes eliminar tu lista de deseos predeterminada.');
         }
 
         $wishlist->delete();
 
-        return redirect()->route('wishlist.index')->with('success', 'Wishlist deleted successfully.');
+        return redirect()->route('wishlist.index')->with('success', 'Lista de deseos eliminada con éxito.');
     }
 
     /**
@@ -100,7 +100,7 @@ class WishlistController extends Controller
     public function toggle(Product $product)
     {
         if (!Auth::check()) {
-            return response()->json(['status' => 'error', 'message' => 'Please login to add to wishlist'], 401);
+            return response()->json(['status' => 'error', 'message' => 'Por favor, inicie sesión para añadir a la lista de deseos'], 401);
         }
 
         $user = Auth::user();
@@ -109,7 +109,7 @@ class WishlistController extends Controller
         $wishlist = $user->wishlists()->where('is_default', true)->first();
         if (!$wishlist) {
             $wishlist = $user->wishlists()->create([
-                'name' => 'My Wishlist',
+                'name' => 'Mi Lista de Deseos',
                 'is_default' => true,
             ]);
         }
@@ -118,10 +118,10 @@ class WishlistController extends Controller
 
         if ($exists) {
             $wishlist->items()->where('product_id', $product->id)->delete();
-            return response()->json(['status' => 'removed', 'message' => 'Product removed from wishlist']);
+            return response()->json(['status' => 'removed', 'message' => 'Producto eliminado de la lista de deseos']);
         } else {
             $wishlist->items()->create(['product_id' => $product->id]);
-            return response()->json(['status' => 'added', 'message' => 'Product added to wishlist']);
+            return response()->json(['status' => 'added', 'message' => 'Producto añadido a la lista de deseos']);
         }
     }
     
@@ -141,7 +141,7 @@ class WishlistController extends Controller
         
         $wishlist->items()->where('product_id', $itemId)->delete();
         
-        return back()->with('success', 'Item removed from wishlist.');
+        return back()->with('success', 'Artículo eliminado de la lista de deseos.');
     }
 
     /**
@@ -163,7 +163,7 @@ class WishlistController extends Controller
     public function addItem(Request $request, Wishlist $wishlist)
     {
         if ($wishlist->user_id !== Auth::id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return response()->json(['message' => 'No autorizado'], 403);
         }
 
         $request->validate([
@@ -173,11 +173,11 @@ class WishlistController extends Controller
         $exists = $wishlist->items()->where('product_id', $request->product_id)->exists();
 
         if ($exists) {
-            return response()->json(['status' => 'exists', 'message' => 'Product is already in this wishlist.']);
+            return response()->json(['status' => 'exists', 'message' => 'El producto ya está en esta lista de deseos.']);
         }
 
         $wishlist->items()->create(['product_id' => $request->product_id]);
 
-        return response()->json(['status' => 'added', 'message' => 'Product added to ' . $wishlist->name]);
+        return response()->json(['status' => 'added', 'message' => 'Producto añadido a ' . $wishlist->name]);
     }
 }

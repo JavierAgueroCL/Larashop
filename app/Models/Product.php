@@ -111,12 +111,12 @@ class Product extends Model
 
     public function getBasePriceFormattedAttribute()
     {
-        return number_format($this->base_price, 2, ',', '.') . ' €';
+        return '$ ' . number_format($this->base_price, 0, ',', '.');
     }
 
     public function getDiscountPriceFormattedAttribute()
     {
-        return $this->discount_price ? number_format($this->discount_price, 2, ',', '.') . ' €' : null;
+        return $this->discount_price ? '$ ' . number_format($this->discount_price, 0, ',', '.') : null;
     }
 
     public function getIsLowStockAttribute()

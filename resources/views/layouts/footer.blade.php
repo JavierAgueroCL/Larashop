@@ -4,8 +4,8 @@
  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <div class="flex flex-col md:flex-row items-center justify-between">
  <div class="mb-4 md:mb-0">
- <h3 class="text-2xl font-bold text-white mb-1">Subscribe Our Newsletter</h3>
- <p class="text-white text-opacity-80">Subscribe to our newsletter and get 10% off your first purchase</p>
+ <h3 class="text-2xl font-bold text-white mb-1">Suscríbete a nuestro boletín</h3>
+ <p class="text-white text-opacity-80">Suscríbete a nuestro boletín y obtén un 10% de descuento en tu primera compra</p>
  </div>
             <div class="w-full md:w-1/2">
                 @if(session('success') && str_contains(session('success'), 'newsletter'))
@@ -19,8 +19,8 @@
                 @else
                     <form action="{{ route('newsletter.subscribe') }}" method="POST" class="flex flex-col sm:flex-row gap-2 sm:gap-0">
                         @csrf
-                        <input type="email" name="email" placeholder="Your Email Address" required class="w-full px-4 py-3 rounded-md sm:rounded-l-md sm:rounded-r-none border-none focus:ring-0 text-gray-800" value="{{ old('email') }}">
-                        <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-md sm:rounded-l-none sm:rounded-r-md font-bold hover:bg-indigo-700 transition-colors uppercase tracking-wide">Subscribe</button>
+                        <input type="email" name="email" placeholder="Tu correo electrónico" required class="w-full px-4 py-3 rounded-md sm:rounded-l-md sm:rounded-r-none border-none focus:ring-0 text-gray-800" value="{{ old('email') }}">
+                        <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-md sm:rounded-l-none sm:rounded-r-md font-bold hover:bg-indigo-700 transition-colors uppercase tracking-wide">Suscribirse</button>
                     </form>
                     @error('email')
                         <p class="text-red-200 text-sm mt-1">{{ $message }}</p>
@@ -52,7 +52,7 @@
  
              <!-- Categories -->
              <div class="col-span-1">
-                 <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">{{ __('Shop') }}</h3>
+                 <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">{{ __('Tienda') }}</h3>
                  <ul class="space-y-2">
                      @foreach($globalCategories->take(5) as $category)
                          <li>
@@ -63,7 +63,7 @@
                      @endforeach
                      <li>
                          <a href="{{ route('products.index') }}" class="text-sm text-gray-600 hover:text-indigo-600 font-semibold">
-                             {{ __('View All') }}
+                             {{ __('Ver Todo') }}
                          </a>
                      </li>
                  </ul>
@@ -72,7 +72,7 @@
                          <!-- My Account -->
                          <div class="col-span-1">
                              @php $myAccountMenu = get_menu('footer_my_account'); @endphp
-                             <h3 class="text-lg font-bold text-gray-900 mb-6">{{ $myAccountMenu ? $myAccountMenu->name : 'My Account' }}</h3>
+                             <h3 class="text-lg font-bold text-gray-900 mb-6">{{ $myAccountMenu ? $myAccountMenu->name : 'Mi Cuenta' }}</h3>
                              <ul class="space-y-3 text-sm text-gray-600">
                                  @if($myAccountMenu)
                                      @foreach($myAccountMenu->items as $item)
@@ -84,7 +84,7 @@
             <!-- Useful Links & Contact -->
             <div class="col-span-1">
                 @php $usefulLinksMenu = get_menu('footer_useful_links'); @endphp
-                <h3 class="text-lg font-bold text-gray-900 mb-6">{{ $usefulLinksMenu ? $usefulLinksMenu->name : 'Information' }}</h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-6">{{ $usefulLinksMenu ? $usefulLinksMenu->name : 'Información' }}</h3>
                 <ul class="space-y-2 text-sm text-gray-600 mb-6">
                     @if($usefulLinksMenu)
                         @foreach($usefulLinksMenu->items as $item)
@@ -115,7 +115,7 @@
      <div class="bg-white py-6 border-t border-gray-200">
          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
              <p class="text-sm text-gray-500 mb-4 md:mb-0">
-                 &copy; {{ date('Y') }} All Rights Reserved by {{ get_setting('shop_name') }}
+                 &copy; {{ date('Y') }} Todos los derechos reservados por {{ get_setting('shop_name') }}
              </p> <div class="flex space-x-2 grayscale opacity-60">
  <img src="https://placehold.co/50x30/eee/666?text=Visa" alt="Visa">
  <img src="https://placehold.co/50x30/eee/666?text=MC" alt="MasterCard">

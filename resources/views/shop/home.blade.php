@@ -94,7 +94,7 @@
                 <aside class="hidden lg:block w-1/4">
                     <div class="bg-white shadow-sm border border-gray-200 rounded-md overflow-hidden h-fit">
                         <div class="bg-primary-500 text-white px-5 py-3 font-bold uppercase tracking-wide">
-                            {{ __('Categories') }}
+                            {{ __('Categorías') }}
                         </div>
                         <ul class="divide-y divide-gray-100">
                             @foreach($globalCategories as $category)
@@ -126,9 +126,9 @@
                                 </svg>
                             </div>
                             <div>
-                                <h5 class="font-bold text-gray-800">{{ get_setting('feature_1_title', 'Free Shipping') }}</h5>
+                                <h5 class="font-bold text-gray-800">{{ get_setting('feature_1_title', 'Envío Gratis') }}</h5>
                                 <p class="text-xs text-gray-500">
-                                    {{ get_setting('feature_1_subtitle', 'On all orders over $50') }}
+                                    {{ get_setting('feature_1_subtitle', 'En pedidos superiores a $50') }}
                                 </p>
                             </div>
                         </div>
@@ -141,8 +141,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h5 class="font-bold text-gray-800">{{ get_setting('feature_2_title', 'Secure Payment') }}</h5>
-                                <p class="text-xs text-gray-500">{{ get_setting('feature_2_subtitle', '100% secure payment') }}
+                                <h5 class="font-bold text-gray-800">{{ get_setting('feature_2_title', 'Pago Seguro') }}</h5>
+                                <p class="text-xs text-gray-500">{{ get_setting('feature_2_subtitle', 'Pago 100% seguro') }}
                                 </p>
                             </div>
                         </div>
@@ -155,8 +155,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h5 class="font-bold text-gray-800">{{ get_setting('feature_3_title', '24/7 Support') }}</h5>
-                                <p class="text-xs text-gray-500">{{ get_setting('feature_3_subtitle', 'Dedicated support') }}
+                                <h5 class="font-bold text-gray-800">{{ get_setting('feature_3_title', 'Soporte 24/7') }}</h5>
+                                <p class="text-xs text-gray-500">{{ get_setting('feature_3_subtitle', 'Soporte dedicado') }}
                                 </p>
                             </div>
                         </div>
@@ -165,13 +165,13 @@
                     <!-- Featured Products -->
                     <div>
                         <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-gray-900">{{ __('Featured Products') }}</h2>
+                            <h2 class="text-2xl font-bold text-gray-900">{{ __('Productos Destacados') }}</h2>
                             <a href="{{ route('products.index') }}"
-                                class="text-sm font-semibold text-primary-600 hover:text-primary-500">View All</a>
+                                class="text-sm font-semibold text-primary-600 hover:text-primary-500">Ver Todo</a>
                         </div>
 
                         @if($featuredProducts->isEmpty())
-                            <p class="text-center text-gray-500">{{ __('No products available.') }}</p>
+                            <p class="text-center text-gray-500">{{ __('No hay productos disponibles.') }}</p>
                         @else
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 @foreach($featuredProducts as $product)
@@ -219,13 +219,13 @@
     <div class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">{{ __('New Arrivals') }}</h2>
+                <h2 class="text-2xl font-bold text-gray-900">{{ __('Novedades') }}</h2>
                 <a href="{{ route('products.index') }}"
-                    class="text-sm font-semibold text-primary-600 hover:text-primary-500">View All</a>
+                    class="text-sm font-semibold text-primary-600 hover:text-primary-500">Ver Todo</a>
             </div>
 
             @if($newProducts->isEmpty())
-                <p class="text-center text-gray-500">{{ __('No new products available.') }}</p>
+                <p class="text-center text-gray-500">{{ __('No hay novedades disponibles.') }}</p>
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                     @foreach($newProducts as $product)

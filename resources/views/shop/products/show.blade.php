@@ -41,7 +41,7 @@
                                 <h1 class="text-3xl font-bold mb-2">{{ $product->name }}</h1>
                                 
                                 @if($product->brand)
-                                    <p class="text-sm text-gray-500 mb-4">{{ __('Brand:') }} <span class="font-semibold text-gray-700">{{ $product->brand->name }}</span></p>
+                                    <p class="text-sm text-gray-500 mb-4">{{ __('Marca:') }} <span class="font-semibold text-gray-700">{{ $product->brand->name }}</span></p>
                                 @endif
 
                                 <div class="mb-4">
@@ -55,7 +55,7 @@
                                                 @endif
                                             @endfor
                                         </div>
-                                        <span class="ml-2 text-sm text-gray-500">({{ $product->reviews->count() }} reviews)</span>
+                                        <span class="ml-2 text-sm text-gray-500">({{ $product->reviews->count() }} reseñas)</span>
                                     </div>
                                 </div>
 
@@ -119,7 +119,7 @@
                                         </div>
 
                                         <button type="submit" class="flex-1 bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-indigo-700 transition duration-300 shadow-md">
-                                            {{ __('Add to Cart') }}
+                                            {{ __('Añadir al Carrito') }}
                                         </button>
                                     </form>
 
@@ -135,14 +135,14 @@
                                 @if(session('success'))
                                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                                         <span class="block sm:inline">{{ session('success') }}</span>
-                                        <a href="{{ route('cart.index') }}" class="font-bold underline ml-2">View Cart</a>
+                                        <a href="{{ route('cart.index') }}" class="font-bold underline ml-2">Ver Carrito</a>
                                     </div>
                                 @endif
                                 
                                 <div class="border-t border-gray-200 pt-4 text-sm text-gray-500">
                                     <p>{{ __('SKU:') }} <span class="text-gray-700">{{ $product->sku }}</span></p>
                                     @if($product->categories->isNotEmpty())
-                                        <p>{{ __('Categories:') }} 
+                                        <p>{{ __('Categorías:') }} 
                                             <span class="text-gray-700">
                                                 @foreach($product->categories as $category)
                                                     <a href="{{ route('products.category', $category->slug) }}" class="hover:text-indigo-600 hover:underline">
@@ -164,19 +164,19 @@
                                     <button @click.prevent="activeTab = 'description'"
                                         :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'description', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'description' }"
                                         class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm uppercase tracking-wide transition-colors">
-                                        {{ __('Description') }}
+                                        {{ __('Descripción') }}
                                     </button>
 
                                     <button @click.prevent="activeTab = 'reviews'"
                                         :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'reviews', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'reviews' }"
                                         class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm uppercase tracking-wide transition-colors">
-                                        {{ __('Customer Reviews') }} ({{ $product->reviews->count() }})
+                                        {{ __('Reseñas de Clientes') }} ({{ $product->reviews->count() }})
                                     </button>
 
                                     <button @click.prevent="activeTab = 'guarantee'"
                                         :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'guarantee', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'guarantee' }"
                                         class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm uppercase tracking-wide transition-colors">
-                                        {{ __('Guarantee') }}
+                                        {{ __('Garantía') }}
                                     </button>
                                 </nav>
                             </div>
@@ -195,7 +195,7 @@
                                 @auth
                                     @if(auth()->user()->hasPurchased($product) && !$product->reviews()->where('user_id', auth()->id())->exists())
                                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
-                                            <h4 class="text-lg font-bold mb-4">{{ __('Write a Review') }}</h4>
+                                            <h4 class="text-lg font-bold mb-4">{{ __('Escribir una Reseña') }}</h4>
                                             
                                             @if(session('error'))
                                                 <div class="text-red-500 mb-4">{{ session('error') }}</div>
@@ -204,7 +204,7 @@
                                             <form action="{{ route('products.reviews.store', $product->id) }}" method="POST">
                                                 @csrf
                                                 <div class="mb-4">
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Rating') }}</label>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Valoración') }}</label>
                                                     <div class="flex items-center space-x-6">
                                                         @for($i = 1; $i <= 5; $i++)
                                                             <label class="flex flex-col items-center cursor-pointer group">
@@ -217,13 +217,13 @@
                                                 </div>
 
                                                 <div class="mb-4">
-                                                    <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Your Review') }}</label>
+                                                    <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Tu Reseña') }}</label>
                                                     <textarea name="comment" id="comment" rows="4" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                                                     @error('comment') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                                 </div>
 
                                                 <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md font-bold hover:bg-indigo-700 transition duration-300 shadow-md">
-                                                    {{ __('Submit Review') }}
+                                                    {{ __('Enviar Reseña') }}
                                                 </button>
                                             </form>
                                         </div>
@@ -232,7 +232,7 @@
 
                                 <!-- Reviews List -->
                                 @if($product->reviews->isEmpty())
-                                    <p class="text-gray-500 italic">{{ __('No reviews yet. Be the first to write one!') }}</p>
+                                    <p class="text-gray-500 italic">{{ __('No hay reseñas todavía. ¡Sé el primero en escribir una!') }}</p>
                                 @else
                                     <div class="space-y-6">
                                         @foreach($product->reviews as $review)
@@ -274,7 +274,7 @@
                                                 </div>
                                                 <div class="ml-3">
                                                     <p class="text-sm text-blue-700">
-                                                        {{ __('Standard manufacturer warranty applies to this product.') }}
+                                                        {{ __('Se aplica la garantía estándar del fabricante a este producto.') }}
                                                     </p>
                                                 </div>
                                             </div>

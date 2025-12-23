@@ -58,7 +58,7 @@
                                         @if($address->address_line_2)
                                             <p>{{ $address->address_line_2 }}</p>
                                         @endif
-                                        <p>{{ $address->city }}, {{ $address->state_province }} {{ $address->postal_code }}</p>
+                                        <p>{{ $address->city }}, {{ $address->state_province }}</p>
                                         <p>{{ $address->country_code }}</p>
                                     </div>
                                     <p class="mt-4 text-sm text-gray-600 flex items-center">

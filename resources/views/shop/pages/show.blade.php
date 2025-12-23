@@ -13,7 +13,7 @@
  
                      @if($page->slug === 'contact')
                          <div class="mt-12 border-t border-gray-200 pt-8 not-prose">
-                             <h3 class="text-2xl font-bold mb-6">{{ __('Send us a Message') }}</h3>
+                             <h3 class="text-2xl font-bold mb-6">{{ __('Envíenos un Mensaje') }}</h3>
  
                              @if(session('success'))
                                  <div class="bg-green-50 border border-green-300 text-green-800 px-4 py-3 rounded relative mb-4" role="alert">
@@ -25,23 +25,23 @@
                                  @csrf
                                  <div class="grid grid-cols-1 gap-6">
                                      <div>
-                                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Subject') }}</label>
+                                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Asunto') }}</label>
                                          <select name="subject" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                             <option>{{ __('General Inquiry') }}</option>
-                                             <option>{{ __('Order Support') }}</option>
-                                             <option>{{ __('Business Inquiry') }}</option>
-                                             <option>{{ __('Other') }}</option>
+                                             <option>{{ __('Consulta General') }}</option>
+                                             <option>{{ __('Soporte de Pedidos') }}</option>
+                                             <option>{{ __('Consulta de Negocios') }}</option>
+                                             <option>{{ __('Otro') }}</option>
                                          </select>
                                      </div>
                                      
                                      <div>
-                                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Message') }}</label>
-                                         <textarea name="message" rows="5" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="{{ __('How can we help you?') }}"></textarea>
+                                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Mensaje') }}</label>
+                                         <textarea name="message" rows="5" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="{{ __('¿En qué podemos ayudarle?') }}"></textarea>
                                      </div>
  
                                      <div>
                                          <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md font-medium shadow-md transition-colors">
-                                             {{ __('Send Message') }}
+                                             {{ __('Enviar Mensaje') }}
                                          </button>
                                      </div>
                                  </div>

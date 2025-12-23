@@ -21,7 +21,6 @@ class Address extends Model
         'address_line_2',
         'city',
         'state_province',
-        'postal_code',
         'country_code',
         'phone',
         'is_default',

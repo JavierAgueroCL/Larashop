@@ -11,44 +11,44 @@ class PageSeeder extends Seeder
     {
         $pages = [
             [
-                'title' => 'About Us',
+                'title' => 'Sobre Nosotros',
                 'slug' => 'about-us',
-                'content' => '<h1>About LaraShop</h1><p>We are a modern e-commerce platform built with Laravel.</p>',
+                'content' => '<h1>Sobre LaraShop</h1><p>Somos una plataforma de comercio electrónico moderna construida con Laravel.</p>',
             ],
             [
-                'title' => 'Privacy Policy',
+                'title' => 'Política de Privacidad',
                 'slug' => 'privacy-policy',
-                'content' => '<h1>Privacy Policy</h1><p>Your privacy is important to us.</p>',
+                'content' => '<h1>Política de Privacidad</h1><p>Su privacidad es importante para nosotros.</p>',
             ],
             [
-                'title' => 'Terms and Conditions',
+                'title' => 'Términos y Condiciones',
                 'slug' => 'terms-and-conditions',
-                'content' => '<h1>Terms and Conditions</h1><p>Please read these terms carefully.</p>',
+                'content' => '<h1>Términos y Condiciones</h1><p>Por favor, lea estos términos cuidadosamente.</p>',
             ],
             [
-                'title' => 'FAQ',
+                'title' => 'Preguntas Frecuentes',
                 'slug' => 'faq',
-                'content' => '<h1>Frequently Asked Questions</h1><p>Here you can find answers to common questions.</p>',
+                'content' => '<h1>Preguntas Frecuentes</h1><p>Aquí puede encontrar respuestas a preguntas comunes.</p>',
             ],
             [
-                'title' => 'Location',
+                'title' => 'Ubicación',
                 'slug' => 'location',
-                'content' => '<h1>Our Location</h1><p>We are located at 123 Street, London, UK.</p>',
+                'content' => '<h1>Nuestra Ubicación</h1><p>Estamos ubicados en Calle Falsa 123, Madrid, España.</p>',
             ],
             [
-                'title' => 'Affiliates',
+                'title' => 'Afiliados',
                 'slug' => 'affiliates',
-                'content' => '<h1>Affiliate Program</h1><p>Join our affiliate program and earn commissions.</p>',
+                'content' => '<h1>Programa de Afiliados</h1><p>Únase a nuestro programa de afiliados y gane comisiones.</p>',
             ],
             [
-                'title' => 'Contact Us',
+                'title' => 'Contáctenos',
                 'slug' => 'contact',
-                'content' => '<h1>Contact Us</h1><p>Email: info@larashop.com<br>Phone: +1 234 567 890</p>',
+                'content' => '<h1>Contáctenos</h1><p>Email: info@larashop.com<br>Teléfono: +34 123 456 789</p>',
             ],
             [
                 'title' => 'Blog',
                 'slug' => 'blog',
-                'content' => '<h1>Our Blog</h1><p>Latest news and updates from LaraShop.</p>',
+                'content' => '<h1>Nuestro Blog</h1><p>Últimas noticias y actualizaciones de LaraShop.</p>',
             ],
         ];
 

@@ -82,18 +82,12 @@
  <input type="text" name="state_province" value="{{ old('state_province') }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
  </div>
 
- <div>
- <label class="block text-sm font-medium text-gray-700">{{ __('Postal Code') }}</label>
- <input type="text" name="postal_code" value="{{ old('postal_code') }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- @error('postal_code') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
- </div>
+
 
  <div>
  <label class="block text-sm font-medium text-gray-700">{{ __('Country') }}</label>
- <select name="country_code" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- <option value="ES">Spain</option>
- <option value="US">United States</option>
- </select>
+ <input type="text" value="Chile" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-600 cursor-not-allowed">
+ <input type="hidden" name="country_code" value="CL">
  </div>
 
  <div class="col-span-2">

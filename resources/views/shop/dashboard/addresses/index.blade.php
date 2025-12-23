@@ -1,7 +1,7 @@
 <x-app-layout>
  <x-slot name="header">
  <h2 class="font-semibold text-xl text-gray-800 leading-tight">
- {{ __('Addresses') }}
+ {{ __('Direcciones') }}
  </h2>
  </x-slot>
 
@@ -18,9 +18,9 @@
  <div class="bg-white overflow-hidden shadow-md sm:rounded-lg">
  <div class="p-6 text-gray-900 ">
  <div class="flex justify-between items-center mb-6">
- <h3 class="text-lg font-bold">{{ __("Your Addresses") }}</h3>
+ <h3 class="text-lg font-bold">{{ __("Tus Direcciones") }}</h3>
  <a href="{{ route('addresses.create') }}" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
- {{ __('Add New Address') }}
+ {{ __('Añadir Nueva Dirección') }}
  </a>
  </div>
 
@@ -31,17 +31,17 @@
  @endif
  
  @if($addresses->isEmpty())
- <p class="text-gray-500 italic">{{ __("You haven't saved any addresses yet.") }}</p>
+ <p class="text-gray-500 italic">{{ __("Aún no has guardado ninguna dirección.") }}</p>
  @else
  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
  @foreach($addresses as $address)
  <div class="border border-gray-200 rounded-lg p-4 relative hover:shadow-md transition-shadow">
  <div class="absolute top-4 right-4 flex space-x-2">
- <a href="{{ route('addresses.edit', $address) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</a>
- <form action="{{ route('addresses.destroy', $address) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to delete this address?') }}');">
+ <a href="{{ route('addresses.edit', $address) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">{{ __('Editar') }}</a>
+ <form action="{{ route('addresses.destroy', $address) }}" method="POST" onsubmit="return confirm('{{ __('¿Estás seguro de que quieres eliminar esta dirección?') }}');">
  @csrf
  @method('DELETE')
- <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button>
+ <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">{{ __('Eliminar') }}</button>
  </form>
  </div>
  
@@ -51,7 +51,7 @@
  </span>
  @if($address->is_default)
  <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ">
- Default
+ {{ __('Predeterminada') }}
  </span>
  @endif
  </div>
@@ -64,7 +64,7 @@
  @if($address->address_line_2)
  <p class="text-sm text-gray-600 ">{{ $address->address_line_2 }}</p>
  @endif
- <p class="text-sm text-gray-600 ">{{ $address->city }}, {{ $address->state_province }} {{ $address->postal_code }}</p>
+ <p class="text-sm text-gray-600 ">{{ $address->city }}, {{ $address->state_province }}</p>
  <p class="text-sm text-gray-600 ">{{ $address->country_code }}</p>
  <p class="text-sm text-gray-600 mt-2 font-medium">{{ $address->phone }}</p>
  </div>

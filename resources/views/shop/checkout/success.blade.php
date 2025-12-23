@@ -1,7 +1,7 @@
 <x-app-layout>
  <x-slot name="header">
  <h2 class="font-semibold text-xl text-gray-800 leading-tight">
- {{ __('Order Confirmed') }}
+ {{ __('Pedido Confirmado') }}
  </h2>
  </x-slot>
 
@@ -12,17 +12,17 @@
  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
  </svg>
  
- <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Thank you for your order!') }}</h1>
+ <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ __('¡Gracias por tu pedido!') }}</h1>
  <p class="text-lg text-gray-600 mb-8">
- {{ __('Your order') }} <span class="font-bold">#{{ $order->order_number }}</span> {{ __('has been placed successfully.') }}
+ {{ __('Tu pedido') }} <span class="font-bold">#{{ $order->order_number }}</span> {{ __('ha sido realizado con éxito.') }}
  </p>
  
  <div class="flex justify-center gap-4">
  <a href="{{ route('home') }}" class="bg-gray-200 text-gray-800 px-6 py-3 rounded-md hover:bg-gray-300 ">
- {{ __('Return Home') }}
+ {{ __('Volver al Inicio') }}
  </a>
  <a href="{{ route('dashboard') }}" class="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700">
- {{ __('View Order') }}
+ {{ __('Ver Pedido') }}
  </a>
  </div>
  </div>

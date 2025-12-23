@@ -9,8 +9,22 @@ class CurrencySeeder extends Seeder
 {
     public function run(): void
     {
-        Currency::create(['code' => 'EUR', 'symbol' => '€', 'exchange_rate' => 1.000000, 'is_active' => true, 'is_default' => true]);
-        Currency::create(['code' => 'USD', 'symbol' => '$', 'exchange_rate' => 1.050000, 'is_active' => true, 'is_default' => false]);
-        Currency::create(['code' => 'GBP', 'symbol' => '£', 'exchange_rate' => 0.830000, 'is_active' => true, 'is_default' => false]);
+        Currency::truncate();
+
+        Currency::create([
+            'code' => 'CLP',
+            'symbol' => '$',
+            'exchange_rate' => 1.000000,
+            'is_active' => true,
+            'is_default' => true
+        ]);
+
+        Currency::create([
+            'code' => 'USD',
+            'symbol' => 'US$',
+            'exchange_rate' => 0.001100, // This will be updated by the command
+            'is_active' => true,
+            'is_default' => false
+        ]);
     }
 }

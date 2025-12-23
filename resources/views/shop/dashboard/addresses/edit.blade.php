@@ -1,123 +1,115 @@
 <x-app-layout>
- <x-slot name="header">
- <h2 class="font-semibold text-xl text-gray-800 leading-tight">
- {{ __('Edit Address') }}
- </h2>
- </x-slot>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Editar Dirección') }}
+        </h2>
+    </x-slot>
 
- <div class="py-12 bg-gray-50">
- <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
- <div class="flex flex-col md:flex-row gap-8">
- <!-- Sidebar -->
- <div class="w-full md:w-1/4">
- <x-dashboard-sidebar />
- </div>
+    <div class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Sidebar -->
+                <div class="w-full md:w-1/4">
+                    <x-dashboard-sidebar />
+                </div>
 
- <!-- Main Content -->
- <div class="w-full md:w-3/4">
- <div class="bg-white overflow-hidden shadow-md sm:rounded-lg border border-gray-300">
- <div class="p-6 text-gray-900">
- <h3 class="text-lg font-bold mb-6 text-gray-800">
- {{ $address->address_type === 'billing' ? __('Update Billing Address') : __('Update Shipping Address') }}
- </h3>
+                <!-- Main Content -->
+                <div class="w-full md:w-3/4">
+                    <div class="bg-white overflow-hidden shadow-md sm:rounded-lg border border-gray-300">
+                        <div class="p-6 text-gray-900">
+                            <h3 class="text-lg font-bold mb-6 text-gray-800">
+                                {{ $address->address_type === 'billing' ? __('Actualizar Dirección de Facturación') : __('Actualizar Dirección de Envío') }}
+                            </h3>
 
- <form action="{{ route('addresses.update', $address) }}" method="POST" x-data="{ type: '{{ old('address_type', $address->address_type) }}' }">
- @csrf
- @method('PUT')
+                            <form action="{{ route('addresses.update', $address) }}" method="POST" x-data="{ type: '{{ old('address_type', $address->address_type) }}' }">
+                                @csrf
+                                @method('PUT')
 
- <input type="hidden" name="address_type" x-model="type">
- 
- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
- 
- <!-- Alias (Only for Shipping) -->
- <div class="col-span-2" x-show="type === 'shipping'">
- <label class="block text-sm font-medium text-gray-700">{{ __('Address Alias') }} <span class="text-gray-500 text-xs">(e.g., Home, Work)</span></label>
- <input type="text" name="alias" value="{{ old('alias', $address->alias) }}" placeholder="My Home" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- @error('alias') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
- </div>
+                                <input type="hidden" name="address_type" x-model="type">
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                
+                                    <!-- Alias (Only for Shipping) -->
+                                    <div class="col-span-2" x-show="type === 'shipping'">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Alias de la Dirección') }} <span class="text-gray-500 text-xs">({{ __('ej., Casa, Trabajo') }})</span></label>
+                                        <input type="text" name="alias" value="{{ old('alias', $address->alias) }}" placeholder="{{ __('Mi Casa') }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        @error('alias') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    </div>
 
- <!-- Personal Info -->
- <div>
- <label class="block text-sm font-medium text-gray-700">{{ __('First Name') }}</label>
- <input type="text" name="first_name" value="{{ old('first_name', $address->first_name) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- @error('first_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
- </div>
+                                    <!-- Personal Info -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Nombre') }}</label>
+                                        <input type="text" name="first_name" value="{{ old('first_name', $address->first_name) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        @error('first_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    </div>
 
- <div>
- <label class="block text-sm font-medium text-gray-700">{{ __('Last Name') }}</label>
- <input type="text" name="last_name" value="{{ old('last_name', $address->last_name) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- @error('last_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
- </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Apellido') }}</label>
+                                        <input type="text" name="last_name" value="{{ old('last_name', $address->last_name) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        @error('last_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    </div>
 
- <div>
- <label class="block text-sm font-medium text-gray-700">{{ __('Company (Optional)') }}</label>
- <input type="text" name="company" value="{{ old('company', $address->company) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Empresa (Opcional)') }}</label>
+                                        <input type="text" name="company" value="{{ old('company', $address->company) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
 
- <div>
- <label class="block text-sm font-medium text-gray-700">{{ __('Phone') }}</label>
- <input type="text" name="phone" value="{{ old('phone', $address->phone) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- @error('phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
- </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
+                                        <input type="text" name="phone" value="{{ old('phone', $address->phone) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        @error('phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    </div>
 
- <!-- Address Details -->
- <div class="col-span-2">
- <label class="block text-sm font-medium text-gray-700">{{ __('Address Line 1') }}</label>
- <input type="text" name="address_line_1" value="{{ old('address_line_1', $address->address_line_1) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- @error('address_line_1') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
- </div>
+                                    <!-- Address Details -->
+                                    <div class="col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Dirección Línea 1') }}</label>
+                                        <input type="text" name="address_line_1" value="{{ old('address_line_1', $address->address_line_1) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        @error('address_line_1') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    </div>
 
- <div class="col-span-2">
- <label class="block text-sm font-medium text-gray-700">{{ __('Address Line 2 (Optional)') }}</label>
- <input type="text" name="address_line_2" value="{{ old('address_line_2', $address->address_line_2) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- </div>
+                                    <div class="col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Dirección Línea 2 (Opcional)') }}</label>
+                                        <input type="text" name="address_line_2" value="{{ old('address_line_2', $address->address_line_2) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
 
- <div>
- <label class="block text-sm font-medium text-gray-700">{{ __('City') }}</label>
- <input type="text" name="city" value="{{ old('city', $address->city) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- @error('city') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
- </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Ciudad') }}</label>
+                                        <input type="text" name="city" value="{{ old('city', $address->city) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                        @error('city') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    </div>
 
- <div>
- <label class="block text-sm font-medium text-gray-700">{{ __('State / Province') }}</label>
- <input type="text" name="state_province" value="{{ old('state_province', $address->state_province) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Estado / Región') }}</label>
+                                        <input type="text" name="state_province" value="{{ old('state_province', $address->state_province) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+                                    </div>
 
- <div>
- <label class="block text-sm font-medium text-gray-700">{{ __('Postal Code') }}</label>
- <input type="text" name="postal_code" value="{{ old('postal_code', $address->postal_code) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- @error('postal_code') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
- </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('País') }}</label>
+                                        <input type="text" value="Chile" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-600 cursor-not-allowed">
+                                        <input type="hidden" name="country_code" value="CL">
+                                    </div>
 
- <div>
- <label class="block text-sm font-medium text-gray-700">{{ __('Country') }}</label>
- <select name="country_code" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
- <option value="ES" {{ old('country_code', $address->country_code) == 'ES' ? 'selected' : '' }}>Spain</option>
- <option value="US" {{ old('country_code', $address->country_code) == 'US' ? 'selected' : '' }}>United States</option>
- </select>
- </div>
+                                    <div class="col-span-2">
+                                        <div class="flex items-center">
+                                            <input id="is_default" name="is_default" type="checkbox" value="1" {{ old('is_default', $address->is_default) ? 'checked' : '' }} class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                            <label for="is_default" class="ml-2 block text-sm text-gray-900">
+                                                {{ __('Establecer como dirección predeterminada') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
 
- <div class="col-span-2">
- <div class="flex items-center">
- <input id="is_default" name="is_default" type="checkbox" value="1" {{ old('is_default', $address->is_default) ? 'checked' : '' }} class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
- <label for="is_default" class="ml-2 block text-sm text-gray-900">
- {{ __('Set as default address') }}
- </label>
- </div>
- </div>
- </div>
-
- <div class="mt-6 flex items-center justify-end gap-4 border-t border-gray-300 pt-6">
- <a href="{{ $address->address_type === 'billing' ? route('addresses.billing') : route('addresses.shipping') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">{{ __('Cancel') }}</a>
- <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md text-sm font-medium shadow-md transition-colors">
- {{ __('Update Address') }}
- </button>
- </div>
- </form>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
+                                <div class="mt-6 flex items-center justify-end gap-4 border-t border-gray-300 pt-6">
+                                    <a href="{{ $address->address_type === 'billing' ? route('addresses.billing') : route('addresses.shipping') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">{{ __('Cancelar') }}</a>
+                                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md text-sm font-medium shadow-md transition-colors">
+                                        {{ __('Actualizar Dirección') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>
