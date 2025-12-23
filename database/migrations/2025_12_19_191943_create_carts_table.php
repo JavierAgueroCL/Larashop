@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('session_id')->nullable()->index();
             $table->string('status')->default('active'); // active, abandoned, converted
-            // $table->foreignId('coupon_id')->nullable()->constrained(); // Future
+            $table->foreignId('coupon_id')->nullable(); // Constraint added in create_coupons_table
             $table->timestamps();
         });
     }

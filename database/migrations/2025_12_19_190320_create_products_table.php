@@ -19,10 +19,12 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('short_description')->nullable();
             $table->text('description')->nullable();
+            $table->text('guarantee')->nullable();
             $table->boolean('is_digital')->default(false);
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
             $table->decimal('base_price', 10, 2);
+            $table->decimal('discount_price', 10, 2)->nullable();
             $table->decimal('cost_price', 10, 2)->nullable();
             $table->foreignId('tax_id')->nullable()->constrained()->nullOnDelete();
             $table->decimal('weight', 8, 2)->nullable();

@@ -26,6 +26,10 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
+
+        Schema::table('carts', function (Blueprint $table) {
+            $table->foreign('coupon_id')->references('id')->on('coupons')->nullOnDelete();
+        });
     }
 
     /**
@@ -33,6 +37,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('carts', function (Blueprint $table) {
+            $table->dropForeign(['coupon_id']);
+        });
         Schema::dropIfExists('coupons');
     }
 };

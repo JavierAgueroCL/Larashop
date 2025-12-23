@@ -17,6 +17,10 @@ return new class extends Migration
             $table->decimal('discount_percentage', 5, 2)->default(0);
             $table->timestamps();
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('customer_group_id')->references('id')->on('customer_groups')->nullOnDelete();
+        });
     }
 
     /**
@@ -24,6 +28,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['customer_group_id']);
+        });
         Schema::dropIfExists('customer_groups');
     }
 };

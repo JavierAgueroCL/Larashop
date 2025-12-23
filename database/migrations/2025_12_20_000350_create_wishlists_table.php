@@ -14,10 +14,20 @@ return new class extends Migration
         Schema::create('wishlists', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->string('slug')->unique(); // For sharing: user-id-slug
+            $table->boolean('is_public')->default(false);
+            $table->boolean('is_default')->default(false);
+            $table->timestamps();
+        });
+
+        Schema::create('wishlist_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('wishlist_id')->constrained('wishlists')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             
-            $table->unique(['user_id', 'product_id']);
+            $table->unique(['wishlist_id', 'product_id']);
         });
     }
 
@@ -26,6 +36,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('wishlist_items');
         Schema::dropIfExists('wishlists');
     }
 };
