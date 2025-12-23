@@ -43,6 +43,10 @@ class SettingSeeder extends Seeder
 
             // Taxes
             ['key' => 'prices_include_tax', 'value' => '1', 'type' => 'boolean', 'group' => 'tax'],
+
+            // Design
+            ['key' => 'hero_slider_height_mobile', 'value' => '500', 'type' => 'integer', 'group' => 'design'],
+            ['key' => 'hero_slider_height_desktop', 'value' => '750', 'type' => 'integer', 'group' => 'design'],
         ];
 
         foreach ($settings as $setting) {

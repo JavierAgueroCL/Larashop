@@ -10,10 +10,27 @@
 
             <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-700 hover:bg-gray-50 hover:text-gray-900' }} group border-l-4 px-3 py-2 flex items-center text-sm font-medium transition-colors">
                 <svg class="{{ request()->routeIs('profile.edit') ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500' }} flex-shrink-0 -ml-1 mr-3 h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
-                {{ __('Personal Data') }}
+                {{ __('Profile') }}
             </a>
+
+            <!-- Authentication -->
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); this.closest('form').submit();"
+                   class="border-transparent text-gray-700 hover:bg-gray-50 hover:text-gray-900 group border-l-4 px-3 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer">
+                    <svg class="text-gray-400 group-hover:text-gray-500 flex-shrink-0 -ml-1 mr-3 h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    {{ __('Log Out') }}
+                </a>
+            </form>
+        </nav>
+    </div>
+</div>
 
             <a href="{{ route('addresses.shipping') }}" class="{{ request()->routeIs('addresses.shipping') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-700 hover:bg-gray-50 hover:text-gray-900' }} group border-l-4 px-3 py-2 flex items-center text-sm font-medium transition-colors">
                 <svg class="{{ request()->routeIs('addresses.shipping') ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500' }} flex-shrink-0 -ml-1 mr-3 h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

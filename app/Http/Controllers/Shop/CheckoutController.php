@@ -7,6 +7,7 @@ use App\Services\Cart\CartService;
 use App\Services\Checkout\CheckoutService;
 use App\Services\Payment\PaymentManager;
 use App\Services\Shipping\ShippingCalculator;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -20,7 +21,7 @@ class CheckoutController extends Controller
         protected ShippingCalculator $shippingCalculator
     ) {}
 
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
         $user = Auth::user();
         // Allow guest to checkout

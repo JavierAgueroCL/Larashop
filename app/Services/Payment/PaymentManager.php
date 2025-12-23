@@ -20,4 +20,9 @@ class PaymentManager extends Manager
     {
         return new PayPalPaymentService();
     }
+
+    public function createTransbankDriver()
+    {
+        return new TransbankPaymentService();
+    }
 }

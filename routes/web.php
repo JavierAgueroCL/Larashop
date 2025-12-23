@@ -34,8 +34,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/wishlist/{wishlist}/item/{product}', [\App\Http\Controllers\Shop\WishlistController::class, 'removeItem'])->name('wishlist.remove_item');
 });
 
+// Blog
+Route::get('/pages/blog', [App\Http\Controllers\Shop\BlogController::class, 'index'])->name('blog.index');
+Route::get('/pages/blog/{slug}', [App\Http\Controllers\Shop\BlogController::class, 'show'])->name('blog.show');
+
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
 Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
+Route::get('/currency/{code}', [App\Http\Controllers\Shop\CurrencyController::class, 'switch'])->name('currency.switch');
 Route::get('/sitemap.xml', [App\Http\Controllers\Shop\SitemapController::class, 'index'])->name('sitemap');
 
 // Newsletter
@@ -52,6 +57,9 @@ Route::delete('/cart/{itemId}', [CartController::class, 'remove'])->name('cart.r
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
 Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+
+// Payment Routes
+Route::match(['get', 'post'], '/payment/transbank/callback', [App\Http\Controllers\Shop\PaymentController::class, 'callback'])->name('payment.transbank.callback');
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {

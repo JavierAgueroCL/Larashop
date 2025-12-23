@@ -28,7 +28,8 @@ class ViewServiceProvider extends ServiceProvider
             'layouts.footer', 
             'components.shop.sidebar',
             'components.layout.main-header',
-            'components.layout.navbar'
+            'components.layout.navbar',
+            'shop.home'
         ], function ($view) {
             $view->with('globalCategories', Category::whereNull('parent_id')->with('children')->where('is_active', true)->orderBy('position')->get());
         });

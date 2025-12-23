@@ -277,13 +277,18 @@
  {{ __('Bank Transfer') }}
  </label>
  </div>
- <div class="flex items-center">
- <input id="paypal" name="payment_method" type="radio" value="paypal" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
- <label for="paypal" class="ml-3 block text-sm font-medium text-gray-700">
- {{ __('PayPal') }}
- </label>
- </div>
- </div>
+                                      <div class="flex items-center">
+                                          <input id="paypal" name="payment_method" type="radio" value="paypal" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                          <label for="paypal" class="ml-3 block text-sm font-medium text-gray-700">
+                                              {{ __('PayPal') }}
+                                          </label>
+                                      </div>
+                                      <div class="flex items-center">
+                                          <input id="transbank" name="payment_method" type="radio" value="transbank" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                          <label for="transbank" class="ml-3 block text-sm font-medium text-gray-700">
+                                              {{ __('Webpay Plus (Transbank)') }}
+                                          </label>
+                                      </div> </div>
  </div>
 
  </div>

@@ -39,7 +39,7 @@
  <a href="{{ route('products.index') }}" class="mt-4 inline-block text-indigo-600 hover:underline">{{ __('Clear filters') }}</a>
  </div>
  @else
- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+ <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
  @foreach($products as $product)
  <x-product.card :product="$product" />
  @endforeach
