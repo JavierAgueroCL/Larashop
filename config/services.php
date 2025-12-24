@@ -51,4 +51,9 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', 'http://localhost:8058/auth/google/callback'),
     ],
 
+    'chilexpress' => [
+        'subscription_key' => env('CHILEXPRESS_SUBSCRIPTION_KEY'),
+        'origin_comuna' => env('CHILEXPRESS_ORIGIN_COMUNA', 'SANTIAGO CENTRO'),
+        'base_url' => env('CHILEXPRESS_BASE_URL', 'https://testservices.wschilexpress.com/rating/api/v1.0'),
+    ],
 ];

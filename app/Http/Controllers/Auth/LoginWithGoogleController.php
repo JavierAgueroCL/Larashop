@@ -56,7 +56,7 @@ class LoginWithGoogleController extends Controller
 
         } catch (\Exception $e) {
             // Log error if needed
-            return redirect()->route('login')->with('error', 'Unable to login with Google. Please try again.');
+            return redirect()->route('login')->with('error', 'Ha ocurrido un error al iniciar sesión con Google. Por favor, inténtalo de nuevo.');
         }
     }
 }

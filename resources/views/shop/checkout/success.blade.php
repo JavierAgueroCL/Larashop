@@ -13,12 +13,31 @@
  </svg>
  
  <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ __('¡Gracias por tu pedido!') }}</h1>
- <p class="text-lg text-gray-600 mb-8">
- {{ __('Tu pedido') }} <span class="font-bold">#{{ $order->order_number }}</span> {{ __('ha sido realizado con éxito.') }}
- </p>
+             <p class="text-lg text-gray-600 mb-8">
+                 {{ __('Tu pedido') }} <span class="font-bold">#{{ $order->order_number }}</span> {{ __('ha sido realizado con éxito.') }}
+             </p>
  
- <div class="flex justify-center gap-4">
- <a href="{{ route('home') }}" class="bg-gray-200 text-gray-800 px-6 py-3 rounded-md hover:bg-gray-300 ">
+             @if($order->payment_method === 'bank_transfer')
+                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8 text-left max-w-md mx-auto">
+                     <h3 class="font-bold text-lg mb-4 text-indigo-700">{{ __('Datos de Transferencia') }}</h3>
+                     <p class="text-sm text-gray-600 mb-4">{{ __('Por favor, realiza la transferencia a la siguiente cuenta y envía el comprobante a nuestro correo.') }}</p>
+                     
+                     <ul class="text-sm space-y-2 text-gray-800">
+                         <li><strong>{{ __('Banco:') }}</strong> {{ config('payment.gateways.bank_transfer.details.bank_name') }}</li>
+                         <li><strong>{{ __('Tipo de Cuenta:') }}</strong> {{ config('payment.gateways.bank_transfer.details.account_type') }}</li>
+                         <li><strong>{{ __('Número de Cuenta:') }}</strong> {{ config('payment.gateways.bank_transfer.details.account_number') }}</li>
+                         <li><strong>{{ __('Titular:') }}</strong> {{ config('payment.gateways.bank_transfer.details.account_holder') }}</li>
+                         <li><strong>{{ __('RUT:') }}</strong> {{ config('payment.gateways.bank_transfer.details.rut') }}</li>
+                         <li><strong>{{ __('Correo:') }}</strong> {{ config('payment.gateways.bank_transfer.details.email') }}</li>
+                     </ul>
+                     
+                     <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 text-sm">
+                         <p>{{ __('IMPORTANTE: Indica tu número de pedido (#:order) en el asunto del correo.', ['order' => $order->order_number]) }}</p>
+                     </div>
+                 </div>
+             @endif
+             
+             <div class="flex justify-center gap-4"> <a href="{{ route('home') }}" class="bg-gray-200 text-gray-800 px-6 py-3 rounded-md hover:bg-gray-300 ">
  {{ __('Volver al Inicio') }}
  </a>
  <a href="{{ route('dashboard') }}" class="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700">

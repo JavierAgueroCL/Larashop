@@ -22,9 +22,9 @@ class NewsletterController extends Controller
             if (!$subscriber->is_active) {
                 // Reactivate if previously unsubscribed
                 $subscriber->update(['is_active' => true]);
-                return redirect()->back()->with('success', 'Welcome back! You have successfully resubscribed to our newsletter.');
+                return redirect()->back()->with('success', '¡Bienvenido de nuevo! Te has vuelto a suscribir con éxito a nuestro boletín.');
             }
-            return redirect()->back()->with('info', 'You are already subscribed to our newsletter.');
+            return redirect()->back()->with('info', 'Ya estás suscrito a nuestro boletín.');
         }
 
         NewsletterSubscriber::create([
@@ -32,6 +32,6 @@ class NewsletterController extends Controller
             'is_active' => true,
         ]);
 
-        return redirect()->back()->with('success', 'Thank you for subscribing to our newsletter!');
+        return redirect()->back()->with('success', 'Gracias por suscribirte a nuestro boletín!');
     }
 }

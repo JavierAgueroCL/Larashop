@@ -428,24 +428,32 @@
                         <div class="bg-white p-6 rounded-lg shadow-md border border-gray-300">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('Método de Pago') }}</h3>
                             <div class="space-y-4">
+                                @if(config('payment.gateways.transbank.enabled'))
                                 <div class="flex items-center">
-                                    <input id="bank_transfer" name="payment_method" type="radio" value="bank_transfer" checked class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    <input id="transbank" name="payment_method" type="radio" value="transbank" checked class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    <label for="transbank" class="ml-3 block text-sm font-medium text-gray-700">
+                                        {{ __('Webpay Plus (Transbank)') }}
+                                    </label>
+                                </div>
+                                @endif
+
+                                @if(config('payment.gateways.bank_transfer.enabled'))
+                                <div class="flex items-center">
+                                    <input id="bank_transfer" name="payment_method" type="radio" value="bank_transfer" {{ !config('payment.gateways.transbank.enabled') ? 'checked' : '' }} class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
                                     <label for="bank_transfer" class="ml-3 block text-sm font-medium text-gray-700">
                                         {{ __('Transferencia Bancaria') }}
                                     </label>
                                 </div>
+                                @endif
+
+                                @if(config('payment.gateways.paypal.enabled'))
                                 <div class="flex items-center">
                                     <input id="paypal" name="payment_method" type="radio" value="paypal" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
                                     <label for="paypal" class="ml-3 block text-sm font-medium text-gray-700">
                                         {{ __('PayPal') }}
                                     </label>
                                 </div>
-                                <div class="flex items-center">
-                                    <input id="transbank" name="payment_method" type="radio" value="transbank" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
-                                    <label for="transbank" class="ml-3 block text-sm font-medium text-gray-700">
-                                        {{ __('Webpay Plus (Transbank)') }}
-                                    </label>
-                                </div>
+                                @endif
                             </div>
                         </div>
 
