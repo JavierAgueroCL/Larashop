@@ -56,4 +56,12 @@ return [
         'origin_comuna' => env('CHILEXPRESS_ORIGIN_COMUNA', 'SANTIAGO CENTRO'),
         'base_url' => env('CHILEXPRESS_BASE_URL', 'https://testservices.wschilexpress.com/rating/api/v1.0'),
     ],
+
+    'starken' => [
+        'base_url' => env('STARKEN_BASE_URL', 'https://restservices-qa.starken.cl/apiqa/starkenservices/rest'),
+        'rut' => env('STARKEN_RUT', '76211240'),
+        'clave' => env('STARKEN_CLAVE', 'key'), // Dummy for QA
+        'token' => env('STARKEN_TOKEN', '30751eee-a1a5-4005-b28b-d60a0f91df6a'), // Dummy for QA
+        'origin_code' => env('STARKEN_ORIGIN_CODE', 'CODIGO_DLS_ORIGEN'), // Needs to be mapped or set
+    ],
 ];

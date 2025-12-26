@@ -51,6 +51,7 @@
                       carriers: {{ $carriers->toJson() }},
                       selectedShippingMethod: '{{ old('shipping_method', $carriers->first()->name ?? '') }}',
                       shippingCost: 0,
+                      isLoadingShipping: false,
                       subtotal: {{ $totals['subtotal'] }},
                       tax: {{ $totals['tax'] }},
                       discount: {{ $totals['discount'] ?? 0 }},
@@ -127,8 +128,8 @@
                           const comunaId = this.form.comuna_id;
                           if (!comunaId) return;
                           
-                          this.shippingCost = 0; // Reset while loading
-                          // Optional: add loading state
+                          this.shippingCost = 0;
+                          this.isLoadingShipping = true;
 
                           fetch('{{ route('checkout.calculate_shipping') }}', {
                               method: 'POST',
@@ -152,7 +153,10 @@
                               
                               this.updateShipping();
                           })
-                          .catch(error => console.error('Error fetching rates:', error));
+                          .catch(error => console.error('Error fetching rates:', error))
+                          .finally(() => {
+                              this.isLoadingShipping = false;
+                          });
                       },
                       init() {
                           if(this.selectedAddress !== 'new' && this.addresses.length > 0) {
@@ -449,13 +453,24 @@
                         <div class="bg-white p-6 rounded-lg shadow-md border border-gray-300">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('Método de Envío') }}</h3>
                             <div class="space-y-4">
-                                <template x-if="carriers.length === 0">
+                                <template x-if="isLoadingShipping">
+                                    <div class="flex items-center justify-center p-4">
+                                        <svg class="animate-spin h-5 w-5 text-indigo-600 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span class="text-gray-600 font-medium">{{ __('Obteniendo precios de envío...') }}</span>
+                                    </div>
+                                </template>
+
+                                <template x-if="!isLoadingShipping && carriers.length === 0">
                                     <p class="text-sm text-gray-500 italic">{{ __('Por favor, ingrese su dirección completa para ver las opciones de envío.') }}</p>
                                 </template>
                                 
                                 <template x-for="carrier in carriers" :key="carrier.name">
                                     <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:border-indigo-500 transition-colors"
-                                           :class="selectedShippingMethod == carrier.name ? 'border-indigo-500 ring-1 ring-indigo-500 bg-indigo-50' : 'border-gray-300'">
+                                           :class="selectedShippingMethod == carrier.name ? 'border-indigo-500 ring-1 ring-indigo-500 bg-indigo-50' : 'border-gray-300'"
+                                           x-show="!isLoadingShipping">
                                         <input type="radio" 
                                                name="shipping_method" 
                                                :value="carrier.name" 
