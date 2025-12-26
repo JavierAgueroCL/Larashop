@@ -44,7 +44,7 @@
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">$ {{ number_format($order->grand_total, 0, ',', '.') }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                                                            {{ strtoupper($order->current_status) }}
+                                                            {{ __('shop.statuses.' . $order->current_status) }}
                                                         </span>
                                                     </td>
                                                 </tr>

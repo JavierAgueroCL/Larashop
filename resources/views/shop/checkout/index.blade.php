@@ -283,7 +283,7 @@
                                         <input type="text" name="billing_address[phone]" x-model="billing.phone" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
 
-                                    <div>
+                                    <div class="md:col-span-2">
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Correo Electrónico') }}</label>
                                         <input type="email" name="email" value="{{ old('email') }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 @error('email') border-red-500 @enderror">
                                         @error('email')
@@ -377,7 +377,6 @@
                                 </div>
                             @endguest
 
-                            <!-- Form Fields (Visible only if New Address selected OR (Guest AND !UseBilling)) -->
                             <div x-show="showForm && (!useBillingForShipping || isAuth)" x-transition.opacity class="space-y-4 pt-4 border-t border-gray-100">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">{{ __('Alias de la Dirección') }} <span class="text-gray-500 text-xs">(e.g., Casa, Trabajo)</span></label>
@@ -393,15 +392,18 @@
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Apellido') }}</label>
                                         <input type="text" name="shipping_address[last_name]" x-model="form.last_name" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
-                                    <div class="md:col-span-2">
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Dirección') }}</label>
-                                        <input type="text" name="shipping_address[address_line_1]" x-model="form.address_line_1" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
+                                        <input type="text" name="shipping_address[phone]" x-model="form.phone" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
 
-                                    <div class="md:col-span-2">
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Departamento / Oficina / Casa (Opcional)') }}</label>
-                                        <input type="text" name="shipping_address[address_line_2]" x-model="form.address_line_2" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                    <div class="hidden">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('País') }}</label>
+                                        <input type="text" value="Chile" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-600 cursor-not-allowed">
+                                        <input type="hidden" name="shipping_address[country_code]" value="CL" x-model="form.country_code">
                                     </div>
+
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Región') }}</label>
                                         <select name="shipping_address[region_id]" x-model="form.region_id" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
@@ -421,14 +423,14 @@
                                         </select>
                                     </div>
 
-                                    <div class="hidden">
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('País') }}</label>
-                                        <input type="text" value="Chile" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-600 cursor-not-allowed">
-                                        <input type="hidden" name="shipping_address[country_code]" value="CL" x-model="form.country_code">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Dirección (Calle y N°)') }}</label>
+                                        <input type="text" name="shipping_address[address_line_1]" x-model="form.address_line_1" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
-                                        <input type="text" name="shipping_address[phone]" x-model="form.phone" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Departamento / Oficina / Casa (Opcional)') }}</label>
+                                        <input type="text" name="shipping_address[address_line_2]" x-model="form.address_line_2" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
                                 </div>
                             </div>

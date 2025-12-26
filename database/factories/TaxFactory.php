@@ -9,8 +9,8 @@ class TaxFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'IVA 21%',
-            'rate' => 21.00,
+            'name' => 'IVA 19%',
+            'rate' => 19.00,
             'is_active' => true,
         ];
     }

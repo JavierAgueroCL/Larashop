@@ -89,28 +89,35 @@ class CartService
 
     public function getCartTotals(Cart $cart): array
     {
-        $subtotal = 0;
+        $grossTotal = 0;
         $taxTotal = 0;
 
         foreach ($cart->items as $item) {
             $lineTotal = $item->price_snapshot * $item->quantity;
-            $subtotal += $lineTotal;
+            $grossTotal += $lineTotal;
             
-            // Calculate Tax for this line
-            $taxAmount = $this->taxCalculator->calculate($lineTotal, $item->product->tax);
+            // Extract Tax for this line (assuming price_snapshot includes tax)
+            $taxAmount = $this->taxCalculator->extract($lineTotal, $item->product->tax);
             $taxTotal += $taxAmount;
         }
 
         // Apply Global Discounts
         $discountTotal = $this->discountCalculator->calculateCartDiscount($cart);
         
-        $grandTotal = ($subtotal + $taxTotal) - $discountTotal;
+        // Prevent negative total
+        $finalTotal = max(0, $grossTotal - $discountTotal);
+
+        // Adjust tax proportionally if there is a discount and total > 0
+        if ($grossTotal > 0 && $discountTotal > 0) {
+            $ratio = $finalTotal / $grossTotal;
+            $taxTotal *= $ratio;
+        }
 
         return [
-            'subtotal' => $subtotal,
+            'subtotal' => $finalTotal - $taxTotal, // Net Subtotal (Excl. Tax)
             'tax' => $taxTotal,
             'discount' => $discountTotal,
-            'total' => max(0, $grandTotal)
+            'total' => $finalTotal
         ];
     }
 

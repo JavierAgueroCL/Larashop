@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
     {
         // Taxes
         if (Tax::count() === 0) {
-            Tax::factory()->create(['name' => 'IVA 21%', 'rate' => 21.00]);
+        $tax = Tax::factory()->create(['name' => 'IVA 19%', 'rate' => 19.00]);
             Tax::factory()->create(['name' => 'IVA 10%', 'rate' => 10.00]);
         }
         $taxes = Tax::all();
@@ -33,42 +33,42 @@ class ProductSeeder extends Seeder
         // Realistic Product Data Map
         $productsMap = [
             'ordenadores' => [
-                ['name' => 'MacBook Pro 16 M3', 'price' => 2499.00, 'img' => 'laptop,macbook'],
-                ['name' => 'Dell XPS 15', 'price' => 1899.00, 'img' => 'laptop,dell'],
-                ['name' => 'Lenovo ThinkPad X1', 'price' => 1599.00, 'img' => 'laptop,work'],
-                ['name' => 'Asus ROG Zephyrus', 'price' => 2100.00, 'img' => 'gaming,laptop'],
+                ['name' => 'MacBook Pro 16 M3', 'price' => rand(5000, 30000), 'img' => 'laptop,macbook'],
+                ['name' => 'Dell XPS 15', 'price' => rand(5000, 30000), 'img' => 'laptop,dell'],
+                ['name' => 'Lenovo ThinkPad X1', 'price' => rand(5000, 30000), 'img' => 'laptop,work'],
+                ['name' => 'Asus ROG Zephyrus', 'price' => rand(5000, 30000), 'img' => 'gaming,laptop'],
             ],
             'moviles' => [
-                ['name' => 'iPhone 15 Pro Max', 'price' => 1200.00, 'img' => 'iphone,smartphone'],
-                ['name' => 'Samsung Galaxy S24 Ultra', 'price' => 1150.00, 'img' => 'samsung,phone'],
-                ['name' => 'Google Pixel 8 Pro', 'price' => 999.00, 'img' => 'pixel,phone'],
-                ['name' => 'OnePlus 12', 'price' => 800.00, 'img' => 'oneplus,phone'],
+                ['name' => 'iPhone 15 Pro Max', 'price' => rand(5000, 30000), 'img' => 'iphone,smartphone'],
+                ['name' => 'Samsung Galaxy S24 Ultra', 'price' => rand(5000, 30000), 'img' => 'samsung,phone'],
+                ['name' => 'Google Pixel 8 Pro', 'price' => rand(5000, 30000), 'img' => 'pixel,phone'],
+                ['name' => 'OnePlus 12', 'price' => rand(5000, 30000), 'img' => 'oneplus,phone'],
             ],
             'tablets' => [
-                ['name' => 'iPad Pro 12.9"', 'price' => 1099.00, 'img' => 'ipad,tablet'],
-                ['name' => 'Samsung Galaxy Tab S9', 'price' => 899.00, 'img' => 'tablet,android'],
+                ['name' => 'iPad Pro 12.9"', 'price' => rand(5000, 30000), 'img' => 'ipad,tablet'],
+                ['name' => 'Samsung Galaxy Tab S9', 'price' => rand(5000, 30000), 'img' => 'tablet,android'],
             ],
             'hombre' => [
-                ['name' => 'Chaqueta de Cuero Clásica', 'price' => 150.00, 'img' => 'jacket,leather'],
-                ['name' => 'Jeans Slim Fit Azul', 'price' => 45.00, 'img' => 'jeans,men'],
-                ['name' => 'Camiseta Básica Blanca', 'price' => 15.00, 'img' => 'tshirt,men'],
-                ['name' => 'Zapatillas Running Pro', 'price' => 85.00, 'img' => 'sneakers,running'],
+                ['name' => 'Chaqueta de Cuero Clásica', 'price' => rand(5000, 30000), 'img' => 'jacket,leather'],
+                ['name' => 'Jeans Slim Fit Azul', 'price' => rand(5000, 30000), 'img' => 'jeans,men'],
+                ['name' => 'Camiseta Básica Blanca', 'price' => rand(5000, 30000), 'img' => 'tshirt,men'],
+                ['name' => 'Zapatillas Running Pro', 'price' => rand(5000, 30000), 'img' => 'sneakers,running'],
             ],
             'mujer' => [
-                ['name' => 'Vestido Floral Verano', 'price' => 65.00, 'img' => 'dress,summer'],
-                ['name' => 'Blusa de Seda', 'price' => 55.00, 'img' => 'blouse,woman'],
-                ['name' => 'Bolso de Mano Elegante', 'price' => 120.00, 'img' => 'handbag,fashion'],
-                ['name' => 'Botines de Piel', 'price' => 95.00, 'img' => 'boots,fashion'],
+                ['name' => 'Vestido Floral Verano', 'price' => rand(5000, 30000), 'img' => 'dress,summer'],
+                ['name' => 'Blusa de Seda', 'price' => rand(5000, 30000), 'img' => 'blouse,woman'],
+                ['name' => 'Bolso de Mano Elegante', 'price' => rand(5000, 30000), 'img' => 'handbag,fashion'],
+                ['name' => 'Botines de Piel', 'price' => rand(5000, 30000), 'img' => 'boots,fashion'],
             ],
             'muebles' => [
-                ['name' => 'Sofá 3 Plazas Nórdico', 'price' => 699.00, 'img' => 'sofa,livingroom'],
-                ['name' => 'Mesa de Centro Madera', 'price' => 120.00, 'img' => 'table,coffee'],
-                ['name' => 'Silla Eames Blanca', 'price' => 45.00, 'img' => 'chair,modern'],
+                ['name' => 'Sofá 3 Plazas Nórdico', 'price' => rand(5000, 30000), 'img' => 'sofa,livingroom'],
+                ['name' => 'Mesa de Centro Madera', 'price' => rand(5000, 30000), 'img' => 'table,coffee'],
+                ['name' => 'Silla Eames Blanca', 'price' => rand(5000, 30000), 'img' => 'chair,modern'],
             ],
             'decoracion' => [
-                ['name' => 'Lámpara de Pie Arco', 'price' => 89.00, 'img' => 'lamp,floor'],
-                ['name' => 'Espejo Redondo Dorado', 'price' => 60.00, 'img' => 'mirror,wall'],
-                ['name' => 'Juego de Cojines Suaves', 'price' => 25.00, 'img' => 'pillows,decor'],
+                ['name' => 'Lámpara de Pie Arco', 'price' => rand(5000, 30000), 'img' => 'lamp,floor'],
+                ['name' => 'Espejo Redondo Dorado', 'price' => rand(5000, 30000), 'img' => 'mirror,wall'],
+                ['name' => 'Juego de Cojines Suaves', 'price' => rand(5000, 30000), 'img' => 'pillows,decor'],
             ],
         ];
 
