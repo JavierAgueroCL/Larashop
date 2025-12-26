@@ -31,7 +31,7 @@
  <li>
  <a href="{{ route('products.index') }}"
  class="{{ !request('category') && !isset($category) ? 'text-indigo-600 font-bold' : 'text-gray-600 hover:text-indigo-500' }}">
- {{ __('Todas las Categorías') }}
+ {{ __('Todas las categorías') }}
  </a>
  </li>
  @foreach($globalCategories as $cat)

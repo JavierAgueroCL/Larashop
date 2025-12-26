@@ -16,7 +16,7 @@
  <form action="{{ route('products.index') }}" method="GET" class="w-full relative">
  <div class="flex">
  <select class="h-11 border-gray-300 border-r-0 rounded-l-md text-sm text-gray-600 focus:ring-0 focus:border-gray-300 bg-gray-50">
- <option>Todas las Categorías</option>
+ <option>Todas las categorías</option>
  @foreach($globalCategories as $category)
  <option value="{{ $category->slug }}">{{ $category->name }}</option>
  @endforeach
