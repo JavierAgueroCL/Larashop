@@ -21,3 +21,7 @@ docker exec larashop-app-1 php artisan app:update-exchange-rates
 ```bash
 docker exec larashop-app-1 php artisan db:wipe && docker exec larashop-app-1 php artisan migrate --seed
 ```
+
+```bash
+docker exec larashop-app-1 php artisan queue:work
+```

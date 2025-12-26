@@ -14,7 +14,15 @@ class SendOrderConfirmationEmail implements ShouldQueue
      */
     public function handle(OrderCreated $event): void
     {
+        // Email al Cliente
         Mail::to($event->order->customer_email)
             ->send(new OrderConfirmation($event->order));
+
+        // Email al Admin
+        $adminEmail = env('SHOP_EMAIL');
+        if ($adminEmail) {
+            Mail::to($adminEmail)
+                ->send(new OrderConfirmation($event->order, true));
+        }
     }
 }

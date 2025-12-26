@@ -16,7 +16,7 @@ class OrderConfirmation extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public Order $order)
+    public function __construct(public Order $order, public bool $isAdmin = false)
     {
     }
 
@@ -25,8 +25,12 @@ class OrderConfirmation extends Mailable
      */
     public function envelope(): Envelope
     {
+        $subject = $this->isAdmin 
+            ? 'Nuevo Pedido Recibido - #' . $this->order->order_number
+            : 'Confirmación de Pedido - #' . $this->order->order_number;
+
         return new Envelope(
-            subject: 'Order Confirmation - #' . $this->order->order_number,
+            subject: $subject,
         );
     }
 
