@@ -119,13 +119,15 @@ class ShippingCalculator
 
         foreach ($options as $option) {
             $clone = clone $carrier;
-            // Use name|codigoTipoEntrega as unique identifier
-            // E.g. Starken|2 (DOMICILIO)
+            // Use name|tipoEntrega|tipoServicio as unique identifier
+            // E.g. Starken|2|0 (DOMICILIO|NORMAL)
             $code = $option['tipoEntrega']['codigoTipoEntrega'];
+            $serviceCode = $option['tipoServicio']['codigoTipoServicio'] ?? '0';
             $desc = $option['tipoEntrega']['descripcionTipoEntrega'];
+            $serviceDesc = $option['tipoServicio']['descripcionTipoServicio'] ?? '';
             
-            $clone->name = $carrier->name . '|' . $code; 
-            $clone->display_name = $carrier->display_name . ' (' . $desc . ')';
+            $clone->name = $carrier->name . '|' . $code . '|' . $serviceCode; 
+            $clone->display_name = $carrier->display_name . ' (' . $desc . ' - ' . $serviceDesc . ')';
             $clone->calculated_cost = $option['costoTotal'];
             
             $results->push($clone);

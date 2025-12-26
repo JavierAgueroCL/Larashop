@@ -565,7 +565,10 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="w-full mt-6 bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 font-bold transition-colors shadow-md">
+                            <button type="submit" 
+                                    :disabled="isLoadingShipping || !selectedShippingMethod"
+                                    :class="{'opacity-50 cursor-not-allowed': isLoadingShipping || !selectedShippingMethod}"
+                                    class="w-full mt-6 bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 font-bold transition-colors shadow-md">
                                 {{ __('Realizar Pedido') }}
                             </button>
                         </div>
