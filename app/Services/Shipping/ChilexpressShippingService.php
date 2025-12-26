@@ -31,6 +31,9 @@ class ChilexpressShippingService
      */
     public function getRates(string $destinationComuna, float $weight, float $width, float $height, float $depth, float $declaredValue = 1000)
     {
+        // TODO: Ensure $destinationComuna matches Chilexpress "CountyCode" (e.g., 'SANTIAGO CENTRO', 'PROVIDENCIA'). 
+        // If the API requires specific codes (e.g., numeric or abbreviations), a mapping layer will be needed.
+
         if (!$this->subscriptionKey) {
             Log::warning('Chilexpress subscription key is missing.');
             return null;
@@ -38,6 +41,8 @@ class ChilexpressShippingService
 
         // Endpoint for Rating
         $url = $this->baseUrl . '/rates/courier';
+        
+        Log::info('Chilexpress: Fetching rates', ['url' => $url, 'origin' => $this->originComuna, 'destination' => $destinationComuna]);
 
         // Prepare Payload
         // Note: This structure matches standard Chilexpress JSON REST API for rating
@@ -63,6 +68,7 @@ class ChilexpressShippingService
             ])->post($url, $payload);
 
             if ($response->successful()) {
+                Log::info('Chilexpress API Response:', $response->json());
                 return $response->json();
             }
 

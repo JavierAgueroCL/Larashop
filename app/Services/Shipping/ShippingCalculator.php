@@ -7,6 +7,8 @@ use App\Models\Carrier;
 use App\Models\Cart;
 use Illuminate\Support\Collection;
 
+use Illuminate\Support\Facades\Log;
+
 class ShippingCalculator
 {
     public function __construct(
@@ -17,8 +19,10 @@ class ShippingCalculator
     {
         // 1. Get all active carriers
         $carriers = Carrier::where('is_active', true)->with('shippingRates')->get();
+        
+        Log::info('ShippingCalculator: Found ' . $carriers->count() . ' active carriers.', ['carriers' => $carriers->pluck('name')]);
 
-        return $carriers->map(function ($carrier) use ($address, $cart) {
+        return $carriers->flatMap(function ($carrier) use ($address, $cart) {
             
             // Specialized Logic for Chilexpress
             if (str_contains(strtolower($carrier->name), 'chilexpress')) {
@@ -29,18 +33,21 @@ class ShippingCalculator
             $rate = $carrier->shippingRates->first(); 
             
             if (!$rate) {
-                return null;
+                return [];
             }
 
-            $carrier->calculated_cost = $rate->cost;
-            return $carrier;
+            $cost = $rate->cost; 
+
+            $carrier->calculated_cost = $cost;
+            return [$carrier];
         })->filter();
     }
 
-    protected function calculateChilexpressRate(Carrier $carrier, Address $address, Cart $cart): ?Carrier
+    protected function calculateChilexpressRate(Carrier $carrier, Address $address, Cart $cart): Collection
     {
         if (!$address->comuna) {
-            return null;
+            Log::warning('ShippingCalculator: Chilexpress skipped. Address has no comuna.', ['address_id' => $address->id]);
+            return collect();
         }
 
         // Calculate Package Details
@@ -54,20 +61,14 @@ class ShippingCalculator
             $product = $item->product;
             $qty = $item->quantity;
             
-            // Basic aggregation: Sum weights
             $weight += ($product->weight ?? 1) * $qty;
             $totalValue += $item->total;
             
-            // Simplified dimension logic: Stack height, max width/depth
-            // This is a rough estimation.
             $height += ($product->height ?? 10) * $qty;
             $width = max($width, $product->width ?? 10);
             $depth = max($depth, $product->depth ?? 10);
         }
 
-        // Use Comuna Name or Code. Ideally, Comuna model has 'code' field. 
-        // We try with the name upper-cased as fallback or specific mapping logic here.
-        // For MVP, passing the comuna name directly.
         $destination = strtoupper($address->comuna->comuna);
 
         $apiRates = $this->chilexpressService->getRates(
@@ -80,34 +81,54 @@ class ShippingCalculator
         );
 
         if (!$apiRates || !isset($apiRates['data']['courierServiceOptions'])) {
-            // Fallback or hide if API fails
-            // If API fails, maybe return default rate if available?
-            // For now, return null to hide carrier if calculation fails.
-            return null; 
+            return collect(); 
         }
 
-        // Find the cheapest or specific service option
-        // API returns multiple services (Next Day, Priority, etc.)
-        // We can create a Carrier instance for EACH service option, 
-        // OR just pick one (e.g. 'Dia Habil Siguiente') for the main 'Chilexpress' carrier.
-        
-        // Let's pick the first available option for simplicity
-        $option = $apiRates['data']['courierServiceOptions'][0] ?? null;
+        $options = $apiRates['data']['courierServiceOptions'];
+        $results = collect();
 
-        if ($option) {
-            $carrier->calculated_cost = $option['serviceCost'];
-            $carrier->display_name = $carrier->display_name . ' (' . $option['serviceDescription'] . ')';
-            return $carrier;
+        foreach ($options as $option) {
+            // Filter out Return Logistics (Logística Devolución)
+            if (str_contains(strtoupper($option['serviceDescription']), 'LDEV') || 
+                str_contains(strtoupper($option['serviceDescription']), 'DEVOLUCION')) {
+                continue;
+            }
+
+            $clone = clone $carrier;
+            // Use name|serviceTypeCode as unique identifier
+            // E.g. Chilexpress|2
+            $clone->name = $carrier->name . '|' . $option['serviceTypeCode']; 
+            $clone->display_name = $carrier->display_name . ' (' . $option['serviceDescription'] . ')';
+            $clone->calculated_cost = $option['serviceValue'];
+            
+            $results->push($clone);
         }
 
-        return null;
+        return $results;
     }
 
-    public function calculateCost(string $carrierName): float
+    public function calculateCost(string $carrierName, ?Address $address = null, ?Cart $cart = null): float
     {
-        // This method needs context (Cart/Address) to work for dynamic carriers.
-        // It might be deprecated or need refactoring if called without context.
-        // For legacy support, return 0 or DB rate.
+        // Handle composite name for Chilexpress
+        if (str_contains($carrierName, '|')) {
+             $parts = explode('|', $carrierName);
+             $baseName = $parts[0];
+             
+             if (str_contains(strtolower($baseName), 'chilexpress') && $address && $cart) {
+                 $carrier = Carrier::where('name', $baseName)->first();
+                 if (!$carrier) return 0.0;
+                 
+                 $rates = $this->calculateChilexpressRate($carrier, $address, $cart);
+                 
+                 $match = $rates->first(function($c) use ($carrierName) {
+                     return $c->name === $carrierName;
+                 });
+                 
+                 return $match ? $match->calculated_cost : 0.0;
+             }
+        }
+        
+        // Default legacy / fallback
         $carrier = Carrier::where('name', $carrierName)->first();
         return $carrier ? ($carrier->shippingRates->first()->cost ?? 0.0) : 0.0;
     }

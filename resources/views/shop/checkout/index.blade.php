@@ -55,8 +55,12 @@
                       tax: {{ $totals['tax'] }},
                       discount: {{ $totals['discount'] ?? 0 }},
 
+                      formatCurrency(val) {
+                          return new Intl.NumberFormat('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(val);
+                      },
+
                       get total() {
-                          return (this.subtotal + this.tax + this.shippingCost - this.discount).toFixed(0);
+                          return (this.subtotal + this.tax + this.shippingCost - this.discount);
                       },
 
                       selectAddress(id) {
@@ -119,9 +123,42 @@
                                   }
                               });
                       },
+                      fetchCarriers() {
+                          const comunaId = this.form.comuna_id;
+                          if (!comunaId) return;
+                          
+                          this.shippingCost = 0; // Reset while loading
+                          // Optional: add loading state
+
+                          fetch('{{ route('checkout.calculate_shipping') }}', {
+                              method: 'POST',
+                              headers: {
+                                  'Content-Type': 'application/json',
+                                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                              },
+                              body: JSON.stringify({ comuna_id: comunaId })
+                          })
+                          .then(res => res.json())
+                          .then(data => {
+                              this.carriers = data.carriers;
+                              
+                              // Select first available or keep current if exists
+                              const exists = this.carriers.find(c => c.name == this.selectedShippingMethod);
+                              if (!exists && this.carriers.length > 0) {
+                                  this.selectedShippingMethod = this.carriers[0].name;
+                              } else if (this.carriers.length === 0) {
+                                  this.selectedShippingMethod = '';
+                              }
+                              
+                              this.updateShipping();
+                          })
+                          .catch(error => console.error('Error fetching rates:', error));
+                      },
                       init() {
                           if(this.selectedAddress !== 'new' && this.addresses.length > 0) {
                               this.populateForm(this.selectedAddress);
+                              // If populated, trigger fetch if comuna exists
+                              if(this.form.comuna_id) this.fetchCarriers();
                           }
                           this.updateShipping();
                           
@@ -136,6 +173,15 @@
                           this.$watch('form.region_id', val => {
                               if(val) this.fetchComunas(val, 'shipping');
                               else this.shippingComunas = [];
+                              // Reset carrier when region changes (implies comuna change needed)
+                              this.carriers = []; 
+                              this.selectedShippingMethod = '';
+                              this.shippingCost = 0;
+                          });
+
+                          // Watch for Shipping Comuna Change to fetch rates
+                          this.$watch('form.comuna_id', val => {
+                              if(val) this.fetchCarriers();
                           });
 
                           this.$watch('billing', () => this.syncBilling(), { deep: true });
@@ -403,24 +449,28 @@
                         <div class="bg-white p-6 rounded-lg shadow-md border border-gray-300">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('Método de Envío') }}</h3>
                             <div class="space-y-4">
-                                @foreach($carriers as $carrier)
+                                <template x-if="carriers.length === 0">
+                                    <p class="text-sm text-gray-500 italic">{{ __('Por favor, ingrese su dirección completa para ver las opciones de envío.') }}</p>
+                                </template>
+                                
+                                <template x-for="carrier in carriers" :key="carrier.name">
                                     <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:border-indigo-500 transition-colors"
-                                           :class="selectedShippingMethod == '{{ $carrier->name }}' ? 'border-indigo-500 ring-1 ring-indigo-500 bg-indigo-50' : 'border-gray-300'">
+                                           :class="selectedShippingMethod == carrier.name ? 'border-indigo-500 ring-1 ring-indigo-500 bg-indigo-50' : 'border-gray-300'">
                                         <input type="radio" 
                                                name="shipping_method" 
-                                               value="{{ $carrier->name }}" 
+                                               :value="carrier.name" 
                                                x-model="selectedShippingMethod"
                                                @change="updateShipping()"
                                                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300">
                                         <div class="ml-3 flex-1 flex justify-between">
                                             <div>
-                                                <span class="block font-medium text-gray-900">{{ $carrier->display_name }}</span>
-                                                <span class="block text-sm text-gray-500">{{ $carrier->delay }}</span>
+                                                <span class="block font-medium text-gray-900" x-text="carrier.display_name"></span>
+                                                <span class="block text-sm text-gray-500" x-text="carrier.delay"></span>
                                             </div>
-                                            <span class="font-bold text-gray-900">$ {{ number_format($carrier->calculated_cost, 0, ',', '.') }}</span>
+                                            <span class="font-bold text-gray-900" x-text="'$ ' + formatCurrency(carrier.calculated_cost)"></span>
                                         </div>
                                     </label>
-                                @endforeach
+                                </template>
                             </div>
                         </div>
 
@@ -478,25 +528,25 @@
                             <div class="border-t border-gray-200 pt-4 space-y-3">
                                 <div class="flex justify-between text-sm text-gray-700">
                                     <span>{{ __('Subtotal') }}</span>
-                                    <span x-text="'$ ' + subtotal.toFixed(0)">$ {{ number_format($totals['subtotal'], 0, ',', '.') }}</span>
+                                    <span x-text="'$ ' + formatCurrency(subtotal)">$ {{ number_format($totals['subtotal'], 0, ',', '.') }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm text-gray-700">
                                     <span>{{ __('Impuestos') }}</span>
-                                    <span x-text="'$ ' + tax.toFixed(0)">$ {{ number_format($totals['tax'], 0, ',', '.') }}</span>
+                                    <span x-text="'$ ' + formatCurrency(tax)">$ {{ number_format($totals['tax'], 0, ',', '.') }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm text-gray-700">
                                     <span>{{ __('Envío') }}</span>
-                                    <span x-text="'$ ' + shippingCost.toFixed(0)">$ 0</span>
+                                    <span x-text="'$ ' + formatCurrency(shippingCost)">$ 0</span>
                                 </div>
                                 @if($totals['discount'] > 0)
                                     <div class="flex justify-between text-sm text-green-600">
                                         <span>{{ __('Descuento') }}</span>
-                                        <span>-$ {{ number_format($totals['discount'], 0, ',', '.') }}</span>
+                                        <span x-text="'-$ ' + formatCurrency(discount)">-$ {{ number_format($totals['discount'], 0, ',', '.') }}</span>
                                     </div>
                                 @endif
                                 <div class="flex justify-between text-lg font-bold text-gray-900">
                                     <span>{{ __('Total') }}</span>
-                                    <span x-text="'$ ' + total">$ {{ number_format($totals['total'], 0, ',', '.') }}</span>
+                                    <span x-text="'$ ' + formatCurrency(total)">$ {{ number_format($totals['total'], 0, ',', '.') }}</span>
                                 </div>
                             </div>
 

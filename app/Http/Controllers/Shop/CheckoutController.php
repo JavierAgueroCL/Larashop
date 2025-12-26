@@ -37,13 +37,14 @@ class CheckoutController extends Controller
 
         $totals = $this->cartService->getCartTotals($cart);
 
-        $addresses = $user ? $user->addresses()->where('address_type', 'shipping')->get() : collect();
+        $addresses = $user ? $user->addresses()->where('address_type', 'shipping')->with(['region', 'comuna'])->get() : collect();
         
-        // Dummy address for calculator if no address selected yet (simplified for MVP)
-        // In a real scenario, we'd AJAX update this when address changes.
-        // For now, we assume "Europe" zone default.
-        $dummyAddress = new \App\Models\Address(['country_code' => 'ES']); 
-        $carriers = $this->shippingCalculator->getAvailableCarriers($dummyAddress, $cart);
+        // Use user's last address or dummy if none
+        $shippingAddress = $addresses->isNotEmpty() ? $addresses->first() : new \App\Models\Address([
+            'country_code' => 'CL',
+        ]);
+        
+        $carriers = $this->shippingCalculator->getAvailableCarriers($shippingAddress, $cart);
         $regions = \App\Models\Region::all();
 
         return view('shop.checkout.index', compact('cart', 'totals', 'user', 'addresses', 'carriers', 'regions'));
@@ -158,5 +159,37 @@ class CheckoutController extends Controller
         // Skipping strict guest check for MVP demo.
 
         return view('shop.checkout.success', compact('order'));
+    }
+
+    public function calculateShipping(Request $request)
+    {
+        $request->validate([
+            'comuna_id' => 'required|exists:comunas,id',
+        ]);
+
+        $comuna = \App\Models\Comuna::find($request->comuna_id);
+        
+        // Create a temporary address for calculation
+        $address = new \App\Models\Address([
+            'country_code' => 'CL',
+            'comuna_id' => $comuna->id,
+            'region_id' => $comuna->provincia->region_id ?? null, // Best effort
+        ]);
+        
+        // Need to load relation manually if not eager loaded by model
+        $address->setRelation('comuna', $comuna);
+
+        $user = Auth::user();
+        $cart = $this->cartService->getCart($user);
+
+        if ($cart->items->isEmpty()) {
+            return response()->json(['carriers' => []]);
+        }
+
+        $carriers = $this->shippingCalculator->getAvailableCarriers($address, $cart);
+
+        return response()->json([
+            'carriers' => $carriers->values()
+        ]);
     }
 }

@@ -70,7 +70,7 @@ class CheckoutService
             
             // 3. Calculate Shipping
             $shippingMethod = $data['shipping_method'] ?? 'standard';
-            $shippingCost = $this->shippingCalculator->calculateCost($shippingMethod);
+            $shippingCost = $this->shippingCalculator->calculateCost($shippingMethod, $shippingAddress, $cart);
 
             // 4. Create Order
             $order = Order::create([

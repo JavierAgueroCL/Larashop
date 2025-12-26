@@ -54,6 +54,7 @@ Route::delete('/cart/{itemId}', [CartController::class, 'remove'])->name('cart.r
 // Checkout (Public for Guest, handles Auth internally)
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::post('/checkout/calculate-shipping', [CheckoutController::class, 'calculateShipping'])->name('checkout.calculate_shipping');
 Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
 
 // Payment Routes
