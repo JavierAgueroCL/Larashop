@@ -64,6 +64,7 @@ class CheckoutController extends Controller
                 'shipping_address.first_name' => 'required',
                 'shipping_address.last_name' => 'required',
                 'shipping_address.address_line_1' => 'required',
+                'shipping_address.address_line_2' => 'nullable|string|max:255',
                 'shipping_address.region_id' => 'required|exists:regiones,id',
                 'shipping_address.comuna_id' => 'required|exists:comunas,id',
                 'shipping_address.country_code' => 'required',
@@ -79,6 +80,7 @@ class CheckoutController extends Controller
             $rules['billing_address.first_name'] = 'required';
             $rules['billing_address.last_name'] = 'required';
             $rules['billing_address.address_line_1'] = 'required';
+            $rules['billing_address.address_line_2'] = 'nullable|string|max:255';
             $rules['billing_address.region_id'] = 'required|exists:regiones,id';
             $rules['billing_address.comuna_id'] = 'required|exists:comunas,id';
             $rules['billing_address.country_code'] = 'required';

@@ -28,6 +28,7 @@
            selectedRegion: '{{ old('region_id') }}',
            selectedComuna: '{{ old('comuna_id') }}',
            document_type: '{{ old('document_type', 'boleta') }}',
+           rut: '{{ old('rut') }}',
            comunas: [],
            
            init() {
@@ -54,6 +55,16 @@
                    .then(data => {
                        this.comunas = data;
                    });
+           },
+
+           formatRut(value) {
+               if (!value) return '';
+               let rut = value.replace(/[^0-9kK]/g, '');
+               if (rut.length < 2) return rut;
+               let dv = rut.slice(-1);
+               let body = rut.slice(0, -1);
+               body = body.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+               return body + '-' + dv.toUpperCase();
            }
        }">
  @csrf
@@ -100,7 +111,7 @@
  <!-- RUT -->
  <div x-show="type !== 'shipping'">
     <label class="block text-sm font-medium text-gray-700">{{ __('RUT') }}</label>
-    <input type="text" name="rut" value="{{ old('rut') }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
+    <input type="text" name="rut" x-model="rut" @input="rut = formatRut($event.target.value)" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
     @error('rut') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
  </div>
 

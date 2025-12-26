@@ -8,56 +8,68 @@
     <div class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <form action="{{ route('checkout.process') }}" method="POST"
-                  x-data="{
+                  x-data='{
                       // Address Logic
-                      selectedAddress: '{{ old('shipping_address_id', $addresses->isNotEmpty() ? $addresses->first()->id : 'new') }}', 
-                      showForm: {{ $addresses->isEmpty() || old('shipping_address_id') == 'new' ? 'true' : 'false' }},
+                      selectedAddress: "{{ old("shipping_address_id", $addresses->isNotEmpty() ? $addresses->first()->id : "new") }}", 
+                      showForm: {{ $addresses->isEmpty() || old("shipping_address_id") == "new" ? "true" : "false" }},
                       addresses: {{ $addresses->toJson() }},
                       regions: {{ $regions->toJson() }},
                       
-                      isAuth: {{ Auth::check() ? 'true' : 'false' }},
+                      isAuth: {{ Auth::check() ? "true" : "false" }},
                       
                       // Shipping Form
                       form: {
-                          alias: '{{ old('shipping_address.alias') }}',
-                          first_name: '{{ old('shipping_address.first_name', $user->first_name ?? '') }}',
-                          last_name: '{{ old('shipping_address.last_name', $user->last_name ?? '') }}',
-                          address_line_1: '{{ old('shipping_address.address_line_1') }}',
-                          region_id: '{{ old('shipping_address.region_id') }}',
-                          comuna_id: '{{ old('shipping_address.comuna_id') }}',
-                          country_code: '{{ old('shipping_address.country_code', 'CL') }}',
-                          phone: '{{ old('shipping_address.phone', $user->phone ?? '') }}'
+                          alias: "{{ old("shipping_address.alias") }}",
+                          first_name: "{{ old("shipping_address.first_name", $user->first_name ?? "") }}",
+                          last_name: "{{ old("shipping_address.last_name", $user->last_name ?? "") }}",
+                          address_line_1: "{{ old("shipping_address.address_line_1") }}",
+                          address_line_2: "{{ old("shipping_address.address_line_2") }}",
+                          region_id: "{{ old("shipping_address.region_id") }}",
+                          comuna_id: "{{ old("shipping_address.comuna_id") }}",
+                          country_code: "{{ old("shipping_address.country_code", "CL") }}",
+                          phone: "{{ old("shipping_address.phone", $user->phone ?? "") }}"
                       },
                       shippingComunas: [],
                       
                       // Guest Billing Logic
                       useBillingForShipping: true,
                       billing: {
-                          first_name: '{{ old('billing_address.first_name') }}',
-                          last_name: '{{ old('billing_address.last_name') }}',
-                          rut: '{{ old('billing_address.rut') }}',
-                          document_type: '{{ old('billing_address.document_type', 'boleta') }}',
-                          company: '{{ old('billing_address.company') }}',
-                          business_activity: '{{ old('billing_address.business_activity') }}',
-                          address_line_1: '{{ old('billing_address.address_line_1') }}',
-                          region_id: '{{ old('billing_address.region_id') }}',
-                          comuna_id: '{{ old('billing_address.comuna_id') }}',
-                          country_code: 'CL',
-                          phone: '{{ old('billing_address.phone') }}'
+                          first_name: "{{ old("billing_address.first_name") }}",
+                          last_name: "{{ old("billing_address.last_name") }}",
+                          rut: "{{ old("billing_address.rut") }}",
+                          document_type: "{{ old("billing_address.document_type", "boleta") }}",
+                          company: "{{ old("billing_address.company") }}",
+                          business_activity: "{{ old("billing_address.business_activity") }}",
+                          address_line_1: "{{ old("billing_address.address_line_1") }}",
+                          address_line_2: "{{ old("billing_address.address_line_2") }}",
+                          region_id: "{{ old("billing_address.region_id") }}",
+                          comuna_id: "{{ old("billing_address.comuna_id") }}",
+                          country_code: "CL",
+                          phone: "{{ old("billing_address.phone") }}"
                       },
                       billingComunas: [],
                       
                       // Shipping & Totals Logic
                       carriers: {{ $carriers->toJson() }},
-                      selectedShippingMethod: '{{ old('shipping_method', $carriers->first()->name ?? '') }}',
+                      selectedShippingMethod: "{{ old("shipping_method", $carriers->first()->name ?? "") }}",
                       shippingCost: 0,
                       isLoadingShipping: false,
-                      subtotal: {{ $totals['subtotal'] }},
-                      tax: {{ $totals['tax'] }},
-                      discount: {{ $totals['discount'] ?? 0 }},
+                      subtotal: {{ $totals["subtotal"] }},
+                      tax: {{ $totals["tax"] }},
+                      discount: {{ $totals["discount"] ?? 0 }},
 
                       formatCurrency(val) {
-                          return new Intl.NumberFormat('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(val);
+                          return new Intl.NumberFormat("es-CL", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(val);
+                      },
+
+                      formatRut(value) {
+                          if (!value) return "";
+                          let rut = value.replace(/[^0-9kK]/g, "");
+                          if (rut.length < 2) return rut;
+                          let dv = rut.slice(-1);
+                          let body = rut.slice(0, -1);
+                          body = body.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                          return body + "-" + dv.toUpperCase();
                       },
 
                       get total() {
@@ -66,7 +78,7 @@
 
                       selectAddress(id) {
                           this.selectedAddress = id;
-                          if (id === 'new') {
+                          if (id === "new") {
                               this.showForm = true;
                               this.clearForm();
                           } else {
@@ -81,6 +93,7 @@
                               this.form.first_name = addr.first_name;
                               this.form.last_name = addr.last_name;
                               this.form.address_line_1 = addr.address_line_1;
+                              this.form.address_line_2 = addr.address_line_2;
                               this.form.region_id = addr.region_id;
                               this.form.comuna_id = addr.comuna_id;
                               this.form.country_code = addr.country_code;
@@ -88,14 +101,15 @@
                           }
                       },
                       clearForm() {
-                          this.form.alias = '';
-                          this.form.first_name = '{{ $user->first_name ?? '' }}';
-                          this.form.last_name = '{{ $user->last_name ?? '' }}';
-                          this.form.address_line_1 = '';
-                          this.form.region_id = '';
-                          this.form.comuna_id = '';
-                          this.form.country_code = 'CL';
-                          this.form.phone = '{{ $user->phone ?? '' }}';
+                          this.form.alias = "";
+                          this.form.first_name = "{{ $user->first_name ?? "" }}";
+                          this.form.last_name = "{{ $user->last_name ?? "" }}";
+                          this.form.address_line_1 = "";
+                          this.form.address_line_2 = "";
+                          this.form.region_id = "";
+                          this.form.comuna_id = "";
+                          this.form.country_code = "CL";
+                          this.form.phone = "{{ $user->phone ?? "" }}";
                       },
                       updateShipping() {
                           const carrier = this.carriers.find(c => c.name == this.selectedShippingMethod);
@@ -106,6 +120,7 @@
                               this.form.first_name = this.billing.first_name;
                               this.form.last_name = this.billing.last_name;
                               this.form.address_line_1 = this.billing.address_line_1;
+                              this.form.address_line_2 = this.billing.address_line_2;
                               this.form.region_id = this.billing.region_id;
                               this.form.comuna_id = this.billing.comuna_id;
                               this.form.country_code = this.billing.country_code;
@@ -117,7 +132,7 @@
                           fetch(`/locations/regions/${regionId}/comunas`)
                               .then(res => res.json())
                               .then(data => {
-                                  if (type === 'billing') {
+                                  if (type === "billing") {
                                       this.billingComunas = data;
                                   } else {
                                       this.shippingComunas = data;
@@ -131,11 +146,11 @@
                           this.shippingCost = 0;
                           this.isLoadingShipping = true;
 
-                          fetch('{{ route('checkout.calculate_shipping') }}', {
-                              method: 'POST',
+                          fetch("{{ route("checkout.calculate_shipping") }}", {
+                              method: "POST",
                               headers: {
-                                  'Content-Type': 'application/json',
-                                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                  "Content-Type": "application/json",
+                                  "X-CSRF-TOKEN": "{{ csrf_token() }}"
                               },
                               body: JSON.stringify({ comuna_id: comunaId })
                           })
@@ -148,18 +163,18 @@
                               if (!exists && this.carriers.length > 0) {
                                   this.selectedShippingMethod = this.carriers[0].name;
                               } else if (this.carriers.length === 0) {
-                                  this.selectedShippingMethod = '';
+                                  this.selectedShippingMethod = "";
                               }
                               
                               this.updateShipping();
                           })
-                          .catch(error => console.error('Error fetching rates:', error))
+                          .catch(error => console.error("Error fetching rates:", error))
                           .finally(() => {
                               this.isLoadingShipping = false;
                           });
                       },
                       init() {
-                          if(this.selectedAddress !== 'new' && this.addresses.length > 0) {
+                          if(this.selectedAddress !== "new" && this.addresses.length > 0) {
                               this.populateForm(this.selectedAddress);
                               // If populated, trigger fetch if comuna exists
                               if(this.form.comuna_id) this.fetchCarriers();
@@ -167,35 +182,35 @@
                           this.updateShipping();
                           
                           // Watchers
-                          this.$watch('billing.region_id', val => {
-                              if(val) this.fetchComunas(val, 'billing');
+                          this.$watch("billing.region_id", val => {
+                              if(val) this.fetchComunas(val, "billing");
                               else this.billingComunas = [];
-                              this.billing.comuna_id = '';
+                              this.billing.comuna_id = "";
                               this.syncBilling();
                           });
                           
-                          this.$watch('form.region_id', val => {
-                              if(val) this.fetchComunas(val, 'shipping');
+                          this.$watch("form.region_id", val => {
+                              if(val) this.fetchComunas(val, "shipping");
                               else this.shippingComunas = [];
                               // Reset carrier when region changes (implies comuna change needed)
                               this.carriers = []; 
-                              this.selectedShippingMethod = '';
+                              this.selectedShippingMethod = "";
                               this.shippingCost = 0;
                           });
 
                           // Watch for Shipping Comuna Change to fetch rates
-                          this.$watch('form.comuna_id', val => {
+                          this.$watch("form.comuna_id", val => {
                               if(val) this.fetchCarriers();
                           });
 
-                          this.$watch('billing', () => this.syncBilling(), { deep: true });
-                          this.$watch('useBillingForShipping', () => this.syncBilling());
+                          this.$watch("billing", () => this.syncBilling(), { deep: true });
+                          this.$watch("useBillingForShipping", () => this.syncBilling());
 
                           // Initial Fetch
-                          if(this.billing.region_id) this.fetchComunas(this.billing.region_id, 'billing');
-                          if(this.form.region_id) this.fetchComunas(this.form.region_id, 'shipping');
+                          if(this.billing.region_id) this.fetchComunas(this.billing.region_id, "billing");
+                          if(this.form.region_id) this.fetchComunas(this.form.region_id, "shipping");
                       }
-                  }">
+                  }'>
                 @csrf
 
                 @if ($errors->any())
@@ -220,14 +235,6 @@
                             <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                                 <h3 class="text-lg font-bold text-gray-900 mb-6">{{ __('Datos de Facturación') }}</h3>
                                 
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700">{{ __('Correo Electrónico') }}</label>
-                                    <input type="email" name="email" value="{{ old('email') }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 @error('email') border-red-500 @enderror">
-                                    @error('email')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     
                                     <!-- Document Type -->
@@ -247,7 +254,7 @@
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('RUT') }}</label>
-                                        <input type="text" name="billing_address[rut]" x-model="billing.rut" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                        <input type="text" name="billing_address[rut]" x-model="billing.rut" @input="billing.rut = formatRut($event.target.value)" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
 
                                     <!-- Company (Conditional) -->
@@ -257,7 +264,7 @@
                                     </div>
 
                                     <!-- Giro (Conditional) -->
-                                    <div x-show="billing.document_type === 'factura'">
+                                    <div x-show="billing.document_type === 'factura'" class="md:col-span-2">
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Giro') }}</label>
                                         <input type="text" name="billing_address[business_activity]" x-model="billing.business_activity" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
@@ -270,10 +277,22 @@
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Apellido') }}</label>
                                         <input type="text" name="billing_address[last_name]" x-model="billing.last_name" @input="syncBilling" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
-                                    <div class="md:col-span-2">
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Dirección') }}</label>
-                                        <input type="text" name="billing_address[address_line_1]" x-model="billing.address_line_1" @input="syncBilling" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
+                                        <input type="text" name="billing_address[phone]" x-model="billing.phone" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Correo Electrónico') }}</label>
+                                        <input type="email" name="email" value="{{ old('email') }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 @error('email') border-red-500 @enderror">
+                                        @error('email')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Country Hidden -->
+                                    <input type="hidden" name="billing_address[country_code]" value="CL">
                                     
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Región') }}</label>
@@ -294,14 +313,14 @@
                                         </select>
                                     </div>
 
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('País') }}</label>
-                                        <input type="text" value="Chile" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-600 cursor-not-allowed">
-                                        <input type="hidden" name="billing_address[country_code]" value="CL">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Dirección (Calle y N°)') }}</label>
+                                        <input type="text" name="billing_address[address_line_1]" x-model="billing.address_line_1" @input="syncBilling" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
-                                        <input type="text" name="billing_address[phone]" x-model="billing.phone" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Departamento / Oficina / Casa (Opcional)') }}</label>
+                                        <input type="text" name="billing_address[address_line_2]" x-model="billing.address_line_2" @input="syncBilling" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
                                 </div>
                             </div>
@@ -378,6 +397,11 @@
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Dirección') }}</label>
                                         <input type="text" name="shipping_address[address_line_1]" x-model="form.address_line_1" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
                                     </div>
+
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">{{ __('Departamento / Oficina / Casa (Opcional)') }}</label>
+                                        <input type="text" name="shipping_address[address_line_2]" x-model="form.address_line_2" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
+                                    </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Región') }}</label>
                                         <select name="shipping_address[region_id]" x-model="form.region_id" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900">
@@ -397,7 +421,7 @@
                                         </select>
                                     </div>
 
-                                    <div>
+                                    <div class="hidden">
                                         <label class="block text-sm font-medium text-gray-700">{{ __('País') }}</label>
                                         <input type="text" value="Chile" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-600 cursor-not-allowed">
                                         <input type="hidden" name="shipping_address[country_code]" value="CL" x-model="form.country_code">
@@ -415,6 +439,7 @@
                                     <input type="hidden" name="shipping_address[first_name]" :value="form.first_name">
                                     <input type="hidden" name="shipping_address[last_name]" :value="form.last_name">
                                     <input type="hidden" name="shipping_address[address_line_1]" :value="form.address_line_1">
+                                    <input type="hidden" name="shipping_address[address_line_2]" :value="form.address_line_2">
                                     <input type="hidden" name="shipping_address[region_id]" :value="form.region_id">
                                     <input type="hidden" name="shipping_address[comuna_id]" :value="form.comuna_id">
                                     <input type="hidden" name="shipping_address[country_code]" :value="form.country_code">
