@@ -35,6 +35,11 @@ class ShippingCalculator
                 return $this->calculateStarkenRate($carrier, $address, $cart);
             }
 
+            // Specialized Logic for Uber
+            if (str_contains(strtolower($carrier->name), 'uber')) {
+                return $this->calculateUberRate($carrier, $address, $cart);
+            }
+
             // Default Logic (Flat Rate / DB Rate)
             $rate = $carrier->shippingRates->first(); 
             
@@ -47,6 +52,27 @@ class ShippingCalculator
             $carrier->calculated_cost = $cost;
             return [$carrier];
         })->filter();
+    }
+
+    protected function calculateUberRate(Carrier $carrier, Address $address, Cart $cart): Collection
+    {
+        if (!$address->comuna) {
+            return collect();
+        }
+
+        $comunaName = $this->normalizeText($address->comuna->comuna);
+        $rates = config('shipping.uber_rates', []);
+
+        if (array_key_exists($comunaName, $rates)) {
+            $cost = $rates[$comunaName];
+            $carrier->calculated_cost = $cost;
+            // Ensure unique name if needed, but Uber is single option per comuna
+            // We can keep original name or append something.
+            // Let's keep original unless we need to distinguish variations.
+            return collect([$carrier]);
+        }
+
+        return collect();
     }
 
     protected function calculateStarkenRate(Carrier $carrier, Address $address, Cart $cart): Collection
@@ -198,9 +224,36 @@ class ShippingCalculator
                  return $match ? $match->calculated_cost : 0.0;
              }
         }
+
+        // Handle Uber (Exact match on base name, but relies on address)
+        if (strtolower($carrierName) === 'uber' && $address && $cart) {
+             $carrier = Carrier::where('name', 'Uber')->first();
+             if ($carrier) {
+                 $rates = $this->calculateUberRate($carrier, $address, $cart);
+                 if ($rates->isNotEmpty()) {
+                     return $rates->first()->calculated_cost;
+                 }
+             }
+             return 0.0;
+        }
         
         // Default legacy / fallback
         $carrier = Carrier::where('name', $carrierName)->first();
         return $carrier ? ($carrier->shippingRates->first()->cost ?? 0.0) : 0.0;
+    }
+
+    protected function normalizeText(string $text): string
+    {
+        $text = mb_strtoupper($text, 'UTF-8');
+        
+        $replacements = [
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+            'À' => 'A', 'È' => 'E', 'Ì' => 'I', 'Ò' => 'O', 'Ù' => 'U',
+            'Ä' => 'A', 'Ë' => 'E', 'Ï' => 'I', 'Ö' => 'O', 'Ü' => 'U',
+            'Â' => 'A', 'Ê' => 'E', 'Î' => 'I', 'Ô' => 'O', 'Û' => 'U',
+            'Ñ' => 'N',
+        ];
+
+        return strtr($text, $replacements);
     }
 }

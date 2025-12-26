@@ -27,12 +27,20 @@ class StarkenShippingService
     {
         // 1. Find Starken Destination Code
         // Normalize name: remove accents, uppercase
-        // Starken names are usually uppercase.
-        // Simple fuzzy search or direct match.
-        $starkenCity = StarkenCity::where('comuna_name', 'LIKE', '%' . strtoupper($comunaName) . '%')->first();
+        $normalized = $this->normalizeText($comunaName);
+        
+        // Try exact match first (normalized)
+        $starkenCity = StarkenCity::where('comuna_name', 'LIKE', $normalized)
+            ->orWhere('comuna_name', 'LIKE', strtoupper($comunaName)) // Try original uppercased too
+            ->first();
 
         if (!$starkenCity) {
-            Log::warning("Starken: Comuna '$comunaName' not found in mapping.");
+            // Fallback: Try simpler LIKE for multi-word matches
+            $starkenCity = StarkenCity::where('comuna_name', 'LIKE', '%' . $normalized . '%')->first();
+        }
+
+        if (!$starkenCity) {
+            Log::warning("Starken: Comuna '$comunaName' (Normalized: $normalized) not found in mapping.");
             return null;
         }
 
@@ -64,6 +72,7 @@ class StarkenShippingService
             ])->post($url, $payload);
 
             if ($response->successful()) {
+                Log::info('Starken API Response:', $response->json());
                 return $response->json();
             }
 
@@ -74,5 +83,21 @@ class StarkenShippingService
             Log::error('Starken Connection Error: ' . $e->getMessage());
             return null;
         }
+    }
+
+    protected function normalizeText(string $text): string
+    {
+        $text = mb_strtoupper($text, 'UTF-8');
+        
+        // Replace special characters
+        $replacements = [
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+            'À' => 'A', 'È' => 'E', 'Ì' => 'I', 'Ò' => 'O', 'Ù' => 'U',
+            'Ä' => 'A', 'Ë' => 'E', 'Ï' => 'I', 'Ö' => 'O', 'Ü' => 'U',
+            'Â' => 'A', 'Ê' => 'E', 'Î' => 'I', 'Ô' => 'O', 'Û' => 'U',
+            'Ñ' => 'N',
+        ];
+
+        return strtr($text, $replacements);
     }
 }

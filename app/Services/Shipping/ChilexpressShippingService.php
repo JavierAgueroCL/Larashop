@@ -33,6 +33,8 @@ class ChilexpressShippingService
     {
         // TODO: Ensure $destinationComuna matches Chilexpress "CountyCode" (e.g., 'SANTIAGO CENTRO', 'PROVIDENCIA'). 
         // If the API requires specific codes (e.g., numeric or abbreviations), a mapping layer will be needed.
+        
+        $destinationComuna = $this->normalizeText($destinationComuna);
 
         if (!$this->subscriptionKey) {
             Log::warning('Chilexpress subscription key is missing.');
@@ -79,5 +81,21 @@ class ChilexpressShippingService
             Log::error('Chilexpress Connection Error: ' . $e->getMessage());
             return null;
         }
+    }
+
+    protected function normalizeText(string $text): string
+    {
+        $text = mb_strtoupper($text, 'UTF-8');
+        
+        // Replace special characters
+        $replacements = [
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+            'À' => 'A', 'È' => 'E', 'Ì' => 'I', 'Ò' => 'O', 'Ù' => 'U',
+            'Ä' => 'A', 'Ë' => 'E', 'Ï' => 'I', 'Ö' => 'O', 'Ü' => 'U',
+            'Â' => 'A', 'Ê' => 'E', 'Î' => 'I', 'Ô' => 'O', 'Û' => 'U',
+            'Ñ' => 'N',
+        ];
+
+        return strtr($text, $replacements);
     }
 }
