@@ -1,0 +1,234 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LaraShop API",
+    "description": "API documentation for LaraShop Categories and Products management.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "parent_id": { "type": "integer", "nullable": true },
+          "description": { "type": "string", "nullable": true },
+          "is_active": { "type": "boolean" },
+          "children": { 
+            "type": "array", 
+            "items": { "$ref": "#/components/schemas/Category" } 
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "sku": { "type": "string" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "base_price": { "type": "number", "format": "float" },
+          "stock_quantity": { "type": "integer" },
+          "description": { "type": "string", "nullable": true },
+          "categories": { 
+            "type": "array", 
+            "items": { "$ref": "#/components/schemas/Category" } 
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/categories": {
+      "get": {
+        "summary": "List all categories",
+        "description": "Returns a tree structure of categories.",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Category" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "slug"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "parent_id": { "type": "integer", "nullable": true },
+                  "description": { "type": "string" },
+                  "is_active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Category created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Category" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "summary": "Get a category by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Category" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a category",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                 "type": "object",
+                 "properties": {
+                    "name": { "type": "string" },
+                    "parent_id": { "type": "integer" }
+                 }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Category updated" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a category",
+        "parameters": [
+           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Category deleted" }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "List products",
+        "responses": {
+          "200": {
+             "description": "List of products",
+             "content": {
+               "application/json": {
+                 "schema": {
+                   "type": "object",
+                   "properties": {
+                     "data": {
+                       "type": "array",
+                       "items": { "$ref": "#/components/schemas/Product" }
+                     },
+                     "links": { "type": "object" },
+                     "meta": { "type": "object" }
+                   }
+                 }
+               }
+             }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a product",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "sku", "slug", "base_price"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "sku": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "base_price": { "type": "number" },
+                  "category_ids": { "type": "array", "items": { "type": "integer" } }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Product created" }
+        }
+      }
+    },
+    "/products/{id}": {
+        "get": {
+            "summary": "Get product details",
+            "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } } ],
+            "responses": { "200": { "description": "Product details" } }
+        },
+        "put": {
+            "summary": "Update product",
+             "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } } ],
+             "requestBody": {
+                 "content": { "application/json": { "schema": { "type": "object" } } }
+             },
+             "responses": { "200": { "description": "Product updated" } }
+        },
+        "delete": {
+             "summary": "Delete product",
+             "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } } ],
+             "responses": { "204": { "description": "Product deleted" } }
+        }
+    }
+  }
+}
