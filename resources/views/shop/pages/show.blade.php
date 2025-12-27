@@ -6,14 +6,14 @@
  </x-slot>
 
  <div class="py-12">
- <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+ <div class="max-w-[1350px] mx-auto sm:px-6 lg:px-8">
  <div class="bg-white overflow-hidden shadow-md sm:rounded-lg">
                  <div class="p-8 text-gray-900 prose max-w-none">
                      {!! $page->content !!}
  
                      @if($page->slug === 'contact')
                          <div class="mt-12 border-t border-gray-200 pt-8 not-prose">
-                             <h3 class="text-2xl font-bold mb-6">{{ __('Envíenos un Mensaje') }}</h3>
+                             <h3 class="text-2xl font-bold mb-6">{{ __('Envíenos un mensaje') }}</h3>
  
                              @if(session('success'))
                                  <div class="bg-green-50 border border-green-300 text-green-800 px-4 py-3 rounded relative mb-4" role="alert">

@@ -11,7 +11,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-[1350px] mx-auto sm:px-6 lg:px-8">
             
             <!-- Rename / Edit Form -->
             <div class="mb-8 bg-white p-6 rounded-lg shadow-sm" x-data="{ editing: false }">

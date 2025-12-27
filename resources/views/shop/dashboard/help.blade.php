@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12 bg-gray-50">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-[1350px] mx-auto sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row gap-8">
                 <!-- Sidebar -->
                 <div class="w-full md:w-1/4">
@@ -48,7 +48,7 @@
 
                     <div class="bg-white overflow-hidden shadow-md sm:rounded-lg border border-gray-300">
                         <div class="p-6 text-gray-900">
-                             <h3 class="text-lg font-bold mb-4 text-gray-800">{{ __("Envíenos un Mensaje") }}</h3>
+                             <h3 class="text-lg font-bold mb-4 text-gray-800">{{ __("Envíenos un mensaje") }}</h3>
 
                              @if(session('success'))
                                 <div class="bg-green-50 border border-green-300 text-green-800 px-4 py-3 rounded relative mb-4" role="alert">

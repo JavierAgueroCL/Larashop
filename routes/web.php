@@ -58,11 +58,18 @@ Route::post('/checkout/calculate-shipping', [CheckoutController::class, 'calcula
 Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
 
 // Payment Routes
+
 Route::match(['get', 'post'], '/payment/transbank/callback', [App\Http\Controllers\Shop\PaymentController::class, 'callback'])->name('payment.transbank.callback');
 
+
+
 // Locations (AJAX)
-Route::get('/locations/regions', [\App\Http\Controllers\Api\LocationController::class, 'regions'])->name('locations.regions');
-Route::get('/locations/regions/{region}/comunas', [\App\Http\Controllers\Api\LocationController::class, 'comunas'])->name('locations.comunas');
+
+Route::get('/locations/regions', [\App\Http\Controllers\Shop\LocationController::class, 'regions'])->name('locations.regions');
+
+Route::get('/locations/regions/{region}/comunas', [\App\Http\Controllers\Shop\LocationController::class, 'comunas'])->name('locations.comunas');
+
+
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
@@ -76,12 +83,7 @@ Route::middleware('auth')->group(function () {
         return view('shop.dashboard.help');
     })->name('dashboard.help');
 
-    Route::post('/dashboard/help', function (\Illuminate\Http\Request $request) {
-        // Here you would handle sending the email
-        // Mail::to('support@larashop.test')->send(new ContactForm($request->all()));
-        
-        return back()->with('success', 'Your message has been sent successfully! We will contact you soon.');
-    })->name('dashboard.help.submit');
+    Route::post('/dashboard/help', [\App\Http\Controllers\Shop\ContactController::class, 'submit'])->name('dashboard.help.submit');
 
     // Orders
     Route::get('/dashboard/orders/{order}', [App\Http\Controllers\Shop\OrderController::class, 'show'])->name('orders.show');
@@ -99,6 +101,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Profile Security (Two-Step Verification)
+    Route::post('/profile/security/send-code', [\App\Http\Controllers\ProfileSecurityController::class, 'sendCode'])->name('profile.security.send-code');
+    Route::put('/profile/security/password', [\App\Http\Controllers\ProfileSecurityController::class, 'updatePassword'])->name('password.update'); // Overrides standard password update if using method="post" in form with @method('put')
+    Route::delete('/profile/security/delete', [\App\Http\Controllers\ProfileSecurityController::class, 'destroy'])->name('profile.destroy.secure');
+    Route::patch('/profile/security/email', [\App\Http\Controllers\ProfileSecurityController::class, 'updateEmail'])->name('profile.email.update');
 });
 
 require __DIR__.'/auth.php';

@@ -25,7 +25,7 @@
 
                     <div class="absolute inset-0 bg-black/10"></div> <!-- Overlay -->
 
-                    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                    <div class="relative max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
                         <div class="max-w-2xl text-white">
                             @if($slider->subtitle)
                                 <h5
@@ -88,7 +88,7 @@
 
     <!-- Main Content Area: Sidebar & Content -->
     <div class="py-12 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Vertical Sidebar (Categories) -->
                 <aside class="hidden lg:block w-1/4">
@@ -188,7 +188,7 @@
     <!-- Banner Area -->
     @if($banners->count() > 0)
         <div class="bg-white py-12">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @foreach($banners as $banner)
                         <div class="relative group overflow-hidden rounded-lg shadow-sm">
@@ -217,7 +217,7 @@
 
     <!-- New Arrivals -->
     <div class="py-12 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">{{ __('Novedades') }}</h2>
                 <a href="{{ route('products.index') }}"

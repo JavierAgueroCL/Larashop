@@ -8,6 +8,8 @@ return [
     'tax_included' => env('SHOP_TAX_INCLUDED', true),
     'guest_checkout' => env('SHOP_GUEST_CHECKOUT', true),
     'low_stock_threshold' => env('SHOP_LOW_STOCK_THRESHOLD', 5),
+    'show_product_count' => env('SHOW_PRODUCT_COUNT', false),
+    'show_empty_categories' => env('SHOW_EMPTY_CATEGORIES', false),
 
     'pagination' => [
         'products_per_page' => 12,

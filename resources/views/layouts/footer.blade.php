@@ -1,7 +1,7 @@
 <footer class="bg-gray-50 text-gray-700 mt-auto border-t border-gray-200">
  <!-- Newsletter Section -->
  <div class="bg-primary-500 py-12">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+ <div class="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
  <div class="flex flex-col md:flex-row items-center justify-between">
  <div class="mb-4 md:mb-0">
  <h3 class="text-2xl font-bold text-white mb-1">Suscríbete a nuestro boletín</h3>
@@ -32,7 +32,7 @@
  </div>
 
  <!-- Main Footer -->
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+ <div class="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
  <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
  
              <!-- Store Info -->
@@ -113,7 +113,7 @@
      </div>
      
      <div class="bg-white py-6 border-t border-gray-200">
-         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+         <div class="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
              <p class="text-sm text-gray-500 mb-4 md:mb-0">
                  &copy; {{ date('Y') }} Todos los derechos reservados por {{ get_setting('shop_name') }}
              </p> <div class="flex space-x-2 grayscale opacity-60">

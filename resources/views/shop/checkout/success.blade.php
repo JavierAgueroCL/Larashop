@@ -6,7 +6,7 @@
  </x-slot>
 
  <div class="py-12">
- <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 text-center">
+ <div class="max-w-[1350px] mx-auto sm:px-6 lg:px-8 text-center">
  <div class="bg-white overflow-hidden shadow-md sm:rounded-lg p-12">
  <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-green-500 mx-auto mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

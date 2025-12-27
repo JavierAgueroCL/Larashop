@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12 bg-gray-50">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-[1350px] mx-auto sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row gap-8">
                 <!-- Sidebar -->
                 <div class="w-full md:w-1/4">
@@ -22,13 +22,12 @@
                             </h3>
 
                             <form action="{{ route('addresses.update', $address) }}" method="POST" 
-                                  x-data="{ 
-                                      type: '{{ old('address_type', $address->address_type) }}',
-                                      regions: {{ $regions->toJson() }},
-                                      selectedRegion: '{{ old('region_id', $address->region_id) }}',
-                                      selectedComuna: '{{ old('comuna_id', $address->comuna_id) }}',
-                                      document_type: '{{ old('document_type', $address->business_activity ? 'factura' : 'boleta') }}',
-                                      rut: '{{ old('rut', $address->rut) }}',
+                                  x-data='{ 
+                                      regions: @json($regions),
+                                      selectedRegion: "{{ old('region_id', $address->region_id) }}",
+                                      selectedComuna: "{{ old('comuna_id', $address->comuna_id) }}",
+                                      document_type: "{{ old('document_type', $address->business_activity ? 'factura' : 'boleta') }}",
+                                      rut: "{{ old('rut', $address->rut) }}",
                                       comunas: [],
                                       
                                       init() {
@@ -36,16 +35,16 @@
                                               this.fetchComunas(this.selectedRegion);
                                           }
                                           
-                                          this.$watch('selectedRegion', value => {
+                                          this.$watch("selectedRegion", value => {
                                               if(value) {
                                                   this.fetchComunas(value).then(() => {
-                                                      if(value != '{{ old('region_id', $address->region_id) }}') {
-                                                          this.selectedComuna = '';
+                                                      if(value != "{{ old('region_id', $address->region_id) }}") {
+                                                          this.selectedComuna = "";
                                                       }
                                                   });
                                               } else {
                                                   this.comunas = [];
-                                                  this.selectedComuna = '';
+                                                  this.selectedComuna = "";
                                               }
                                           });
                                       },
@@ -59,31 +58,34 @@
                                       },
 
                                       formatRut(value) {
-                                          if (!value) return '';
-                                          let rut = value.replace(/[^0-9kK]/g, '');
+                                          if (!value) return "";
+                                          let rut = value.replace(/[^0-9kK]/g, "");
                                           if (rut.length < 2) return rut;
                                           let dv = rut.slice(-1);
                                           let body = rut.slice(0, -1);
                                           body = body.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                                          return body + '-' + dv.toUpperCase();
+                                          return body + "-" + dv.toUpperCase();
                                       }
-                                  }">
+                                  }'>
                                 @csrf
                                 @method('PUT')
 
-                                <input type="hidden" name="address_type" x-model="type">
+                                <input type="hidden" name="address_type" value="{{ old('address_type', $address->address_type) }}">
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 
                                     <!-- Alias (Only for Shipping) -->
-                                    <div class="col-span-2" x-show="type === 'shipping'">
+                                    @if($address->address_type === 'shipping')
+                                    <div class="col-span-2">
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Alias de la Dirección') }} <span class="text-gray-500 text-xs">({{ __('ej., Casa, Trabajo') }})</span></label>
                                         <input type="text" name="alias" value="{{ old('alias', $address->alias) }}" placeholder="{{ __('Mi Casa') }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
                                         @error('alias') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
+                                    @endif
 
                                      <!-- Document Type -->
-                                     <div class="col-span-2" x-show="type !== 'shipping'">
+                                     @if($address->address_type !== 'shipping')
+                                     <div class="col-span-2">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Tipo de Documento') }}</label>
                                         <div class="flex items-center gap-4">
                                             <label class="flex items-center">
@@ -96,6 +98,8 @@
                                             </label>
                                         </div>
                                      </div>
+                                     @endif
+
                                     <!-- Personal Info -->
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Nombre') }}</label>
@@ -110,23 +114,28 @@
                                     </div>
 
                                      <!-- RUT -->
-                                     <div x-show="type !== 'shipping'">
+                                     @if($address->address_type !== 'shipping')
+                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('RUT') }}</label>
                                         <input type="text" name="rut" x-model="rut" @input="rut = formatRut($event.target.value)" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
                                         @error('rut') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                      </div>
+                                     @endif
+
                                      <!-- Company (Conditional) -->
-                                     <div x-show="type !== 'shipping' && document_type === 'factura'">
+                                     @if($address->address_type !== 'shipping')
+                                     <div x-show="document_type === 'factura'">
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Razón Social') }}</label>
                                         <input type="text" name="company" value="{{ old('company', $address->company) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
                                         @error('company') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                      </div>
                                      <!-- Giro (Conditional) -->
-                                     <div class="col-span-2" x-show="type !== 'shipping' && document_type === 'factura'">
+                                     <div class="col-span-2" x-show="document_type === 'factura'">
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Giro') }}</label>
                                         <input type="text" name="business_activity" value="{{ old('business_activity', $address->business_activity) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">
                                         @error('business_activity') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                      </div>
+                                     @endif
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
                                         <input type="text" name="phone" value="{{ old('phone', $address->phone) }}" class="mt-1 block w-full rounded-md border-gray-300 text-gray-900 shadow-md focus:border-indigo-500 focus:ring-indigo-500">

@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12 bg-gray-50">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-[1350px] mx-auto sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row gap-8">
                 <!-- Sidebar -->
                 <div class="w-full md:w-1/4">
@@ -162,7 +162,7 @@
 
                             <div class="flex items-center mt-5">
                                 <x-primary-button x-data="" x-on:click.prevent="$dispatch('open-modal', 'logout-other-browser-sessions')">
-                                    {{ __('Cerrar Otras Sesiones de Navegador') }}
+                                    {{ __('Cerra sesiones en otros navegadores') }}
                                 </x-primary-button>
 
                                 <x-modal name="logout-other-browser-sessions" :show="$errors->userDeletion->isNotEmpty()" focusable>
@@ -171,7 +171,7 @@
                                         @method('delete')
 
                                         <h2 class="text-lg font-medium text-gray-900">
-                                            {{ __('Cerrar Otras Sesiones de Navegador') }}
+                                            {{ __('Cerra sesiones en otros navegadores') }}
                                         </h2>
 
                                         <p class="mt-1 text-sm text-gray-600">
@@ -198,7 +198,7 @@
                                             </x-secondary-button>
 
                                             <x-primary-button class="ml-3">
-                                                {{ __('Cerrar Otras Sesiones de Navegador') }}
+                                                {{ __('Cerra sesiones en otros navegadores') }}
                                             </x-primary-button>
                                         </div>
                                     </form>

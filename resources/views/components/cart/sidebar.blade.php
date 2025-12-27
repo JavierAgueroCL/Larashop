@@ -18,7 +18,7 @@
                     <!-- Header -->
                     <div class="px-4 sm:px-6 py-6 border-b border-gray-200">
                         <div class="flex items-start justify-between">
-                            <h2 class="text-lg font-medium text-gray-900">{{ __('Shopping Cart') }}</h2>
+                            <h2 class="text-lg font-medium text-gray-900">{{ __('Carrito de compra') }}</h2>
                             <div class="ml-3 h-7 flex items-center">
                                 <button type="button" @click="open = false"
                                     class="-m-2 p-2 text-gray-400 hover:text-gray-500">

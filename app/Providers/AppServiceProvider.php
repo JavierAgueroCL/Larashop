@@ -7,7 +7,9 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Eloquent\ProductRepository;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Registered;
 use App\Listeners\MergeCartOnLogin;
+use App\Listeners\SendWelcomeEmail;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,6 +42,11 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(
             Login::class,
             MergeCartOnLogin::class
+        );
+
+        Event::listen(
+            Registered::class,
+            SendWelcomeEmail::class
         );
     }
 }

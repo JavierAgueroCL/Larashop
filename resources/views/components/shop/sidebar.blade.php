@@ -34,27 +34,9 @@
  {{ __('Todas las categorías') }}
  </a>
  </li>
- @foreach($globalCategories as $cat)
- <li>
- <a href="{{ route('products.category', $cat->slug) }}"
- class="{{ (request('category') == $cat->slug || (isset($category) && $category->slug == $cat->slug)) ? 'text-indigo-600 font-bold' : 'text-gray-600 hover:text-indigo-500' }}">
- {{ $cat->name }}
- </a>
- @if($cat->children->isNotEmpty())
- <ul class="ml-4 mt-1 space-y-1">
- @foreach($cat->children as $child)
- <li>
- <a href="{{ route('products.category', $child->slug) }}"
- class="{{ (request('category') == $child->slug || (isset($category) && $category->slug == $child->slug)) ? 'text-indigo-600 font-bold' : 'text-sm text-gray-500 hover:text-indigo-500' }}">
- {{ $child->name }}
- </a>
- </li>
- @endforeach
- </ul>
- @endif
- </li>
- @endforeach
- </ul>
+                         @foreach($globalCategories as $cat)
+                             <x-shop.category-item :category="$cat" />
+                         @endforeach </ul>
  </div>
 
  <!-- Clear Filters -->

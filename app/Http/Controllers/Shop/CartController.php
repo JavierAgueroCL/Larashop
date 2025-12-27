@@ -34,13 +34,13 @@ class CartController extends Controller
         $coupon = Coupon::where('code', $request->coupon_code)->first();
 
         if (!$coupon) {
-            return redirect()->back()->with('error', 'Invalid coupon code.');
+            return redirect()->back()->with('error', 'Cupón inválido.');
         }
 
         $cart = $this->cartService->getCart(Auth::user());
         $cart->update(['coupon_id' => $coupon->id]);
 
-        return redirect()->back()->with('success', 'Coupon applied successfully!');
+        return redirect()->back()->with('success', 'Cupón aplicado con éxito!');
     }
 
     public function add(Request $request)
@@ -72,13 +72,13 @@ class CartController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Product added to cart!',
+                'message' => 'Producto añadido al carrito!',
                 'cartCount' => $cartCount,
                 'html' => $sidebarHtml
             ]);
         }
 
-        return redirect()->back()->with('success', 'Product added to cart!');
+        return redirect()->back()->with('success', 'Producto añadido al carrito!');
     }
 
     public function update(Request $request, int $itemId): RedirectResponse
@@ -90,7 +90,7 @@ class CartController extends Controller
         $cart = $this->cartService->getCart(Auth::user());
         $this->cartService->updateQuantity($cart, $itemId, $request->quantity);
 
-        return redirect()->route('cart.index')->with('success', 'Cart updated!');
+        return redirect()->route('cart.index')->with('success', 'Carrito actualizado!');
     }
 
     public function remove(Request $request, int $itemId)
@@ -112,6 +112,6 @@ class CartController extends Controller
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'Item removed from cart!');
+        return redirect()->route('cart.index')->with('success', 'Item eliminado del carrito!');
     }
 }

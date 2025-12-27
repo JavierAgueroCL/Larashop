@@ -1,5 +1,5 @@
 <div class="bg-white border-b border-gray-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-10 text-xs text-gray-600">
             <!-- Left: Contact -->
             <div class="flex items-center space-x-4">
