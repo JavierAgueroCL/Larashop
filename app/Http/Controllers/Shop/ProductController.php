@@ -66,7 +66,7 @@ class ProductController extends Controller
             abort(404);
         }
 
-        $product->load(['reviews.user', 'images']);
+        $product->load(['reviews.user', 'images', 'specifications']);
 
         $meta = [
             'title' => $product->meta_title ?? $product->name,
@@ -85,11 +85,11 @@ class ProductController extends Controller
         $user = Auth::user();
 
         if (!$user->hasPurchased($product)) {
-            return back()->with('error', 'You can only review products you have purchased.');
+            return back()->with('error', 'Solo puedes dejar una reseña si has comprado este producto.');
         }
 
         if ($product->reviews()->where('user_id', $user->id)->exists()) {
-            return back()->with('error', 'You have already reviewed this product.');
+            return back()->with('error', 'Ya has reseñado este producto.');
         }
 
         $validated = $request->validate([
@@ -103,7 +103,7 @@ class ProductController extends Controller
             'comment' => $validated['comment'],
         ]);
 
-        return back()->with('success', 'Thank you for your review!');
+        return back()->with('success', '¡Gracias por tu reseña!');
     }
 
     public function quickView(Product $product): View

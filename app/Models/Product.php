@@ -85,6 +85,11 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function specifications(): HasMany
+    {
+        return $this->hasMany(ProductSpecification::class);
+    }
+
     // Scopes
     public function scopeActive($query)
     {

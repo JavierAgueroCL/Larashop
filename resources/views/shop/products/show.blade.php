@@ -167,6 +167,14 @@
                                         {{ __('Descripción') }}
                                     </button>
 
+                                    @if($product->specifications->isNotEmpty())
+                                        <button @click.prevent="activeTab = 'specifications'"
+                                            :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'specifications', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'specifications' }"
+                                            class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm uppercase tracking-wide transition-colors">
+                                            {{ __('Especificaciones') }}
+                                        </button>
+                                    @endif
+
                                     <button @click.prevent="activeTab = 'reviews'"
                                         :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'reviews', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'reviews' }"
                                         class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm uppercase tracking-wide transition-colors">
@@ -187,6 +195,31 @@
                                     {!! nl2br(e($product->description)) !!}
                                 </div>
                             </div>
+
+                            <!-- Specifications Tab -->
+                            @if($product->specifications->isNotEmpty())
+                                <div x-show="activeTab === 'specifications'" x-transition:enter.opacity.duration.300ms>
+                                    <div class="space-y-8">
+                                        @foreach($product->specifications->groupBy('attribute_section') as $section => $specs)
+                                            <div>
+                                                <h4 class="text-lg font-bold text-gray-900 mb-4 border-b pb-2">{{ $section }}</h4>
+                                                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                                    <table class="min-w-full divide-y divide-gray-200">
+                                                        <tbody class="divide-y divide-gray-200">
+                                                            @foreach($specs as $spec)
+                                                                <tr class="even:bg-gray-50">
+                                                                    <td class="px-6 py-4 text-sm font-medium text-gray-500 w-1/3">{{ $spec->attribute_name }}</td>
+                                                                    <td class="px-6 py-4 text-sm text-gray-900">{{ $spec->attribute_value }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
 
                             <!-- Reviews Tab -->
                             <div x-show="activeTab === 'reviews'" x-transition:enter.opacity.duration.300ms>
