@@ -20,7 +20,7 @@ class HomeController extends Controller
         $banners = Banner::where('is_active', true)->orderBy('order')->get();
         
         $featuredProducts = $this->productRepository->getFeatured(8);
-        $newProducts = $this->productRepository->getNew(8);
+        $newProducts = $this->productRepository->getNew(10);
 
         return view('shop.home', compact('featuredProducts', 'newProducts', 'sliders', 'banners'));
     }
