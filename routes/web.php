@@ -10,6 +10,13 @@ use App\Http\Controllers\Shop\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
+Route::get('/debug-intl', function () {
+    return [
+        'intl_loaded' => extension_loaded('intl'),
+        'php_version' => PHP_VERSION,
+        'sapi' => PHP_SAPI,
+    ];
+});
 Route::get('/', HomeController::class)->name('home');
 
 // Categories (must be before specific product routes if sharing prefix, but here we separate)

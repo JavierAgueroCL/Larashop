@@ -57,7 +57,7 @@ RUN apt-get install -y --no-install-recommends openssl \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # Copy OpenSSL CFG
-COPY ./Docker/php/openssl.cnf /etc/ssl/openssl.cnf
+COPY ./php/openssl.cnf /etc/ssl/openssl.cnf
 
 # Install extensions
 # RUN docker-php-ext-install mysql
