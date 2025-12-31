@@ -3,7 +3,10 @@
 services:
   #PHP Service
   app:
-    image: 684b13c0a4197ccb9ef65f0cb0c1df0373a74610ee494f9316a6f685bf80e12b
+    build:
+      context: .
+      dockerfile: Docker/Dockerfile
+    image: larashop-app
     restart: unless-stopped
     tty: true
     environment:

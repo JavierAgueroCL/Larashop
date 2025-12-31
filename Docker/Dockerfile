@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     libwebp-dev \
+    libicu-dev \
     locales \
     zip \
     libzip-dev \
@@ -27,6 +28,10 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     gnupg2 \
     gnupg1
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
 
 # Install MS ODBC Driver for SQL Server
 RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
@@ -52,11 +57,12 @@ RUN apt-get install -y --no-install-recommends openssl \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # Copy OpenSSL CFG
-COPY ./php/openssl.cnf /etc/ssl/openssl.cnf
+COPY ./Docker/php/openssl.cnf /etc/ssl/openssl.cnf
 
 # Install extensions
 # RUN docker-php-ext-install mysql
 RUN docker-php-ext-install pdo_mysql zip exif pcntl mysqli
+RUN docker-php-ext-configure intl && docker-php-ext-install intl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 RUN docker-php-ext-install gd
 

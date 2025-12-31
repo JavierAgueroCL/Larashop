@@ -1,7 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../../tailwind.config.js";
 
-[x-cloak] {
-    display: none !important;
+@layer utilities {
+    [x-cloak] {
+        display: none !important;
+    }
 }
